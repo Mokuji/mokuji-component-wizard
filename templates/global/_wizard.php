@@ -1,17 +1,56 @@
-<?php namespace components\wizard; if(!defined('TX')) die('No direct access.'); ?>
+<?php namespace components\wizard; if(!defined('TX')) die('No direct access.');
 
-<div class="wizard<?php echo $wizard->id ?>"></div>
+$uid = tx('Security')->random_string(20);
 
-<?php tx('ob')->script('wizard_module', "wiz{$wizard->id}"); ?>
+echo load_plugin('jquery_rest');
+echo load_plugin('jquery_tmpl');
 
-<script type="text/javascript">
+$data->wizard->is('empty')
   
-  $(function(){
-    $('.wizard<?php echo $wizard->id ?>').txWizard({
-      root: <?php echo $wizard->id ?> 
-    });
+  ->success(function(){
+    __('Wizard could not be found', 0, 'ucfirst');
+  })
+  
+  ->failure(function($wizard)use($uid){
+    
+    ?>
+    <div class="wizard_<?php echo $uid ?>"></div>
+    
+    <?php tx('ob')->script('wizard_module', "templates"); ?>
+      
+      <script id="tx-wizard-question-tmpl" type="text/x-jquery-tmpl">
+        <div class="question" data-id="${id}">
+          <input type="button" class="button grey back_button" value="<?php echo ___('Go back', 'ucfirst'); ?>" />
+          <h4>${title}</h4>
+          <p>${description}</p>
+        </div>
+        <div class="answers"></div>
+      </script>
+      
+      <script id="tx-wizard-answer-tmpl" type="text/x-jquery-tmpl">
+        <a class="answer" data-id="${id}" {{if target_question_id}}data-target-question-id="${target_question_id}"{{else}}href="${url}" target="${url_target}"{{/if}}>
+          <h5>${title}</h5>
+          <p>${description}</p>
+        </a>
+      </script>
+      
+    <?php tx('ob')->end(); ?>
+    
+    <?php tx('ob')->script('wizard_module', "wiz_{$uid}"); ?>
+      
+      <script type="text/javascript">
+        
+        $(function(){
+          $('.wizard_<?php echo $uid ?>').txWizard({
+            wizard_id: <?php echo $wizard->id ?>
+          });
+        });
+        
+      </script>
+      
+    <?php
+    tx('ob')->end();
+    
   });
   
-</script>
-
-<?php tx('ob')->end(); ?>
+?>

@@ -1,0 +1,19 @@
+{
+  "title": "Wizard component",
+  "description": "Verzorgt een vraag-antwoord structuur die gebruikers op een eenvoudige manier verder helpt.",
+  "type": "manual",
+  "dbUpdates": true,
+  "versions": [
+    {
+      "version": "1.1",
+      "date": "2012-10-08",
+      "description": "Backend toegevoegd en component installeerbaar gemaakt.",
+      "changes": [
+        {
+          "title": "Backend voor Wizards",
+          "description": "Wizards kunnen nu worden toegevoegd aan een pagina en direct worden bewerkt vanaf daar. Door middel van het live voorbeeld gaat dit snel en gemakkelijk."
+        }
+      ]
+    }
+  ]
+}

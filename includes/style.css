@@ -1,3 +1,10 @@
+/* Frontend */
+
+/*
+
+= Commented because it's rather intrusive
+= considering this is the includes/style.css
+
 body{
   font-family:Calibri, Arial, sans-serif
 }
@@ -14,7 +21,7 @@ h1, h2, h3, h4, h5, h6{
   border:solid #ccc 1px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
-  border-radius: 3px;  
+  border-radius: 3px;
 }
   .question{
     padding:5px 10px;
@@ -66,4 +73,98 @@ h1, h2, h3, h4, h5, h6{
     }
     .answer p{
       margin:5px 0px;
+    }
+*/
+
+/* Backend */
+#tx-backend #question_wrapper{
+  width:350px;
+  float:left;
+}
+  #tx-backend #question_wrapper .question{
+    padding:5px 10px;
+    background-color: rgb(62, 182, 202);
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: rgb(255, 255, 255);
+    display: block;
+    line-height: 21px;
+    padding-left: 10px;
+    position:relative;
+    min-height:53px;
+  }
+    #tx-backend #question_wrapper .question h4{
+      font-weight:normal;
+      font-size:1em;
+      font-weight:bold;
+    }
+    #tx-backend #question_wrapper .question p{
+      margin:5px 0px;
+      display: inline-block;
+    }
+    #tx-backend #question_wrapper .question .edit_question{
+      position:absolute;
+      top:5px;
+      right:5px;
+      padding:3px 5px;
+      font-size:11px
+    }
+    #tx-backend #question_wrapper .question .delete_question{
+      position:absolute;
+      top:35px;
+      right:5px;
+      padding:3px 5px;
+      font-size:11px
+    }
+  #tx-backend #question_wrapper .answer{
+    position:relative;
+    padding:10px;
+    border-top:solid #44b5cd 1px;
+    background:rgb(216, 240, 244);
+    display:block;
+    min-height:44px;
+  }
+  #tx-backend #question_wrapper .answer:hover{
+    background:rgb(216, 240, 244);
+  }
+    #tx-backend #question_wrapper .answer .edit_answer{
+      position:absolute;
+      top:5px;
+      right:5px;
+      padding:3px 5px;
+      font-size:11px
+    }
+    #tx-backend #question_wrapper .answer .delete_answer{
+      position:absolute;
+      top:35px;
+      right:5px;
+      padding:3px 5px;
+      font-size:11px
+    }
+    #tx-backend #question_wrapper .answer h5{
+      font-weight:bold;
+      font-size:1em;
+      color:#44b5cd;
+      text-shadow:0px 1px 0px #fff;
+    }
+    #tx-backend #question_wrapper .answer p{
+      margin:5px 0px;
+    }
+
+#tx-backend #question_list_wrapper{
+  width:220px;
+  padding-right:15px;
+  margin-right:14px;
+  border-right:1px solid #515151;
+  float:left;
+}
+  #tx-backend #question_list li{
+    margin-top:5px;
+    margin-bottom:10px;
+  }
+    #tx-backend #question_list li.untitled a,
+    #tx-backend #question_list li.new_question a{
+      font-style:italic;
     }

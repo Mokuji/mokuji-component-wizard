@@ -5,11 +5,21 @@ class Questions extends \dependencies\BaseModel
   
   protected static 
   
-    $table_name = 'wizard_nodes',
+    $table_name = 'wizard_questions',
     
     $relations = array(
-      'Answers'=>array('id' => 'Link.qnode_id')
+      'Answers'=>array('id' => 'Answers.source_question_id')
     );
+  
+  public function get_answers()
+  {
+    
+    return tx('Sql')
+      ->table('wizard', 'Answers')
+      ->where('source_question_id', $this->id)
+      ->execute();
+    
+  }
   
 }
 

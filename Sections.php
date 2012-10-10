@@ -2,6 +2,7 @@
 
 class Sections extends \dependencies\BaseViews
 {
-
+  
+  
   
 }

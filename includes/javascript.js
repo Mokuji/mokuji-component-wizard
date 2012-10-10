@@ -1,210 +1,339 @@
+/**
+ * txWizardEditor
+ *
+ * @author Beanow
+ */
 (function($){
-
-  $.fn.txWizard = function(options){
-    init_wizard(this, options);
-  };
   
-  //initiate wizards
-  function init_wizard(el, options){
+  $.txWizardEditor = function(wiz_id, qlist, qview, squestion)
+  {
     
-    //select the elements we are turning into wizards
-    $(el)
+    var wizard_id = 0
+      , wizard = {}
+      , active_question = 0
+      , questions = {}
+      , answers = {}
+      , question_list = null
+      , question_view = null
+      , start_question = null;
     
-    //set data for each individual wizard
-    .each(function(){
-      $(this).data().wizard = {
-        crumpath: [],
-        options: options
-      };
-    })
+    if(wiz_id <= 0){
+      alert('Fatal error: no wizard ID given for wizard editor.');
+      return;
+    }
     
-    //put on their robes and wizard hats
-    .append([
-      
-      $('<div/>', {
-        'class': 'question',
-        'html': [
-          $('<h4/>', {'class': 'question-title'})[0],
-          $('<p/>', {'class': 'question-description'})[0],
-          $('<button/>', {'class': 'back', 'text': 'Terug', 'disabled':'disabled'})[0]
-        ]
-      })[0],
-      
-      $('<div/>', {
-        'class': 'answers'
-      }).disableSelection()[0]
-      
-    ])
+    wizard_id = wiz_id;
+    question_list = $(qlist);
+    question_view = $(qview);
+    start_question = $(squestion);
     
-    //bind events
-    .on('click.wizard', 'div.answer', function(e){
-      
-      var el = e.delegateTarget, clicked = this;
-      
-      load_followup_question($(clicked).attr('rel'))
-        .done(function(data){
-          change_wizard(data, el);
-          $(el).find('.back').removeAttr('disabled');
-        })
-        .fail(function(error){
-          $(clicked).find('p').text(error).css('color', 'red');
+    if(question_list.size() <= 0){
+      alert('Fatal error: no valid question list selector provided for wizard editor.');
+      return;
+    }
+    
+    if(question_view.size() <= 0){
+      alert('Fatal error: no valid question view selector provided for wizard editor.');
+      return;
+    }
+    
+    if(start_question.size() <= 0){
+      alert('Fatal error: no valid start question selector provided for wizard editor.');
+      return;
+    }
+    
+    init_view(question_view);
+    init_menu();
+    
+    var getq = $.rest('GET', '?rest=wizard/questions/'+wizard_id)
+      .done(function(result){
+        $.each(result, function(i){
+          questions[result[i].id] = result[i];
         });
-      
-    })
-    .on('click.wizard', 'button.back', function(e){
-      
-      var el = e.delegateTarget;
-      var data = $(el).data().wizard.crumpath.length > 0 && $(el).data().wizard.crumpath.pop() && $(el).data().wizard.crumpath.pop();
-      
-      if(!data){
-        alert('Failed to remember previous question. Sorry :(');
-        return;
-      }
-      
-      if($(el).data().wizard.crumpath.length == 0){
-        $(el).find('.back').attr('disabled', 'disabled');
-      }
-      
-      change_wizard(data, el);
-      
-    })
+      });
     
-    //initiate first question
-    .each(function(){
+    var getw = $.rest('GET', '?rest=wizard/wizard/'+wizard_id)
+      .done(function(result){
+        wizard = result;
+      });
+    
+    $.when(getq, getw)
+      .done(function(){
+        render_menu();
+      });
+    
+    function init_view(target){
       
-      var el = this;
-      
-      load_followup_question($(el).data().wizard.options.root)
-        .done(function(data){
-          change_wizard(data, el);
-        })
-        .fail(function(error){
-          $(el).text(error);
-        });
-    
-    });
-    
-  }
-  
-  //change the HTML of a wizard
-  function change_wizard(data, el){
-    
-    $(el)
-      .find('.question')
-        .find('h4')
-        .text(data.question.title)
-      .end()
-        .find('p')
-        .text(data.question.description)
-      .end()
-    
-    .end()
-      .find('.answers')
-      .empty()
-      .append($.map(data.answers, function(answer){
-      
-        var prop = {
-          'class': 'answer',
-          'rel': answer.id,
-          'html': '<h5>'+answer.title+'</h5><p>'+answer.description+'</p>'
-        };
+      target
         
-        if(answer.url.length > 0){
-          var a=true;
-          $.extend(prop, {
-            href: answer.url,
-            target: (answer.url_target.length > 0 ? answer.url_target : '_blank')
+        /* ---------- Click edit_question button ---------- */
+        .on('click', '.edit_question', function(e){
+          e.preventDefault();
+          edit_question($(e.target).closest('.question').attr('data-id'));
+        })
+        
+        /* ---------- Click delete_question button ---------- */
+        .on('click', '.delete_question', function(e){
+          e.preventDefault();
+          if(confirm("Really?")){
+            var qid = $(e.target).closest('.question').attr('data-id');
+            $.rest('DELETE', '?rest=wizard/question/'+qid)
+              .done(function(result){
+                delete questions[qid];
+                render_menu();
+                question_view.html('');
+              });
+          }
+        })
+        
+        /* ---------- Click cancel button for question editing ---------- */
+        .on('click', '.edit-question-form .cancel', function(e){
+          e.preventDefault();
+          if(active_question > 0)
+            to_question(active_question);
+          else
+            question_view.html('');
+        })
+        
+        /* ---------- Click edit_answer button ---------- */
+        .on('click', '.edit_answer', function(e){
+          e.preventDefault();
+          edit_answer($(e.target).closest('.answer').attr('data-id'));
+        })
+        
+        /* ---------- Click delete_answer button ---------- */
+        .on('click', '.delete_answer', function(e){
+          e.preventDefault();
+          if(confirm("Really?")){
+            var aid = $(e.target).closest('.answer').attr('data-id');
+            $.rest('DELETE', '?rest=wizard/answer/'+aid)
+              .done(function(result){
+                delete answers[aid];
+                $(e.target).closest('.answer').remove();
+              });
+          }
+        })
+        
+        /* ---------- Click cancel button for answer editing ---------- */
+        .on('click', '.edit-answer-form .cancel', function(e){
+          e.preventDefault();
+          var answer = $(e.target).closest('.answer');
+          if(answer.attr('data-id') == '')
+            answer.remove();
+          else
+            answer.replaceWith($('#tx-wizard-answer-view').tmpl(answers[answer.attr('data-id')]));
+        })
+        
+        /* ---------- Click add_answer button ---------- */
+        .on('click', '.add_answer', function(e){
+          e.preventDefault();
+          edit_answer('new');
+        })
+        
+      ;
+      
+    }
+    
+    function init_menu(){
+      
+      start_question
+        
+        /* ---------- Change start_question_id ---------- */
+        .on('change', function(e){
+          e.preventDefault();
+          wizard.start_question_id = $(e.target).val();
+          $.rest('PUT', '?rest=wizard/wizard/'+wizard.id, wizard)
+            .done(function(result){
+              wizard = result;
+            });
+        })
+        
+      ;
+      
+      question_list
+        
+        /* ---------- Click question ---------- */
+        .on('click', 'li.question a', function(e){
+          e.preventDefault();
+          to_question($(e.target).attr('data-id'));
+        })
+        
+        /* ---------- Click new question ---------- */
+        .on('click', 'li.new_question a', function(e){
+          e.preventDefault();
+          edit_question('new');
+        })
+        
+      ;
+      
+    }
+    
+    function render_menu(){
+      
+      var target = question_list;
+      start_question.find('option').remove();
+      target.find('.question').remove();
+      $.each(questions, function(i){
+        target.append($('#tx-wizard-question-li').tmpl(questions[i]));
+        start_question.append($('#tx-wizard-question-opt').tmpl($.extend({start_question_id: wizard.start_question_id}, questions[i])));
+      });
+      
+    }
+    
+    function render_answers(target){
+      
+      target.find('.answer').remove();
+      $.each(answers, function(i){
+        target.append($('#tx-wizard-answer-view').tmpl(answers[i]));
+      });
+      
+    }
+    
+    function to_question(qid){
+      
+      var question = questions[qid] ? questions[qid] : {};
+      question_view.html($('#tx-wizard-question-view').tmpl(question));
+      get_answers(qid);
+      
+    }
+    
+    function edit_question(qid){
+      
+      var question = {wizard_id: wizard_id};
+      if(qid !== 'new'){
+        $.extend(question, questions[qid]);
+        active_question = qid;
+      }
+      else{
+        active_question = 0;
+      }
+      
+      question_view.html($('#tx-wizard-question-edit').tmpl(question));
+      question_view.find('.edit-question-form').restForm({
+        success: function(question){
+          
+          questions[question.id] = question;
+          render_menu();
+          to_question(question.id);
+          
+        }
+      })
+      
+    }
+    
+    function edit_answer(aid){
+      
+      var target
+        , answer;
+      
+      if(aid === 'new'){
+        answer = {
+          source_question_id: active_question,
+          questions: questions
+        };
+        target = $('#tx-wizard-answer-edit').tmpl(answer).appendTo(question_view.find('.answers'));
+      }
+      
+      else{
+        answer = $.extend({questions: questions, active_question: active_question}, answers[aid]);
+        target = $('#tx-wizard-answer-edit').tmpl(answer);
+        question_view.find('.answer[data-id='+aid+']').replaceWith(target);
+      }
+      
+      target.find('.edit-answer-form').restForm({
+        success: function(answer){
+          
+          answers[answer.id] = answer;
+          render_answers(question_view.find('.answers'));
+          
+        }
+      })
+      
+    }
+    
+    function get_answers(qid){
+      
+      var process = function(result){
+        
+        if(result){
+          answers = {};
+          $.each(result, function(i){
+            answers[result[i].id] = result[i];
           });
         }
         
-        return $((a ? '<a/>' : '<div/>'), prop)[0];
+        active_question = qid;
+        render_answers(question_view.find('.answers'));
         
-      }))
-      
-    $(el).data().wizard.crumpath.push(data);
-    
-  }
-  
-  //get information about a question based on answer_id
-  function load_followup_question(id){
-    
-    var D = $.Deferred();
-      
-    $.getJSON(window.location.href, {
-      ajax_action: 'wizard/load_followup_question',
-      answer_id: id,
-    })
-    
-    .done(function(d){
-      if(d.question == undefined){
-        D.reject('Question does not exist.');
-      }else if(d.answers == undefined){
-        D.reject('Question has no answers.');
-      }else{
-        D.resolve(d);
       }
-    })
-    
-    .fail(function(){
-      D.reject('Loading question failed.');
-    });
       
-    return D.promise();
-    
-  }
-  
-  //get information about an answer based on answer_id
-  function load_answer(id){
-  
-    var D = $.Deferred();
-    
-    $.getJSON(window.location.href, {
-      ajax_action: 'wizard/load_answer',
-      answer_id: id,
-    })
-    
-    .done(function(d){
-      if(d.id == undefined){
-        D.reject('Answer does not exist.');
-      }else{
-        D.resolve(d);
-      }
-    })
-    
-    .fail(function(){
-      D.reject('Failed to load answer.');
-    });
-    
-    return D.promise();
-  
-  }
-  
-  //get information about a question based on question_id
-  function load_question(id){
-    
-    var D = $.Deferred();
+      if(active_question > 0 && active_question == qid)
+        process();
+      else
+        $.rest('GET', '?rest=wizard/answers/'+qid).done(process);
       
-    $.getJSON(window.location.href, {
-      ajax_action: 'wizard/load_question',
-      answer_id: id,
-    })
+    }
     
-    .done(function(d){
-      if(d.question == undefined){
-        D.reject('Question does not exist.');
-      }else if(d.answers == undefined){
-        D.reject('Question has no answers.');
-      }else{
-        D.resolve(d);
-      }
-    })
+  };
+  
+})(jQuery);
+
+
+/**
+ * txWizard
+ *
+ * @author Beanow
+ */
+
+(function($){
+
+  $.fn.txWizard = function(options){
     
-    .fail(function(){
-      D.reject('Loading question failed.');
-    });
-      
-    return D.promise();
+    var wizard = {}
+      , question = {}
+      , answers = {}
+      , view = $(this);
     
-  }
+    if(!options || !options.wizard_id){
+      alert('Fatal error: no wizard ID given for wizard editor.');
+      return;
+    }
+    
+    wizard.id = options.wizard_id;
+    
+    $.rest('GET', '?rest=wizard/wizard/'+options.wizard_id)
+      .done(function(result){
+        wizard = result;
+        
+        var getq = $.rest('GET', '?rest=wizard/question/'+wizard.start_question_id)
+          .done(function(result){
+            question = result;
+          });
+        
+        var geta = $.rest('GET', '?rest=wizard/answers/'+wizard.start_question_id)
+          .done(function(result){
+            answers = result;
+          });
+        
+        $.when(getq, geta)
+          .done(function(){
+            render_question();
+          });
+        
+      });
+    
+    function render_question(){
+      view.html($('#tx-wizard-question-tmpl').tmpl(question));
+      render_answers();
+    };
+    
+    function render_answers(){
+      var av = view.find('.answers').html('');
+      $.each(answers, function(i){
+        av.append($('#tx-wizard-answer-tmpl').tmpl(answers[i]));
+      });
+    }
+    
+  };
   
 })(jQuery);
