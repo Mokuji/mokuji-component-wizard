@@ -198,10 +198,10 @@ class Json extends \dependencies\BaseViews
       ->answers;
     
   }
-  
+    
   protected function create_answer($data, $params)
   {
-    
+
     $data = $data->having('title', 'description', 'source_question_id', 'target_question_id', 'url', 'url_target')
       ->title->validate('Title', array('required', 'string', 'not_empty'))->back()
       ->description->validate('Description', array('string'))->back()

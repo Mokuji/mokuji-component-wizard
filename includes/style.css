@@ -78,23 +78,43 @@ h1, h2, h3, h4, h5, h6{
 
 /* Backend */
 #tx-backend #question_wrapper{
-  width:350px;
+  min-width:450px;
+  max-width:750px;
   float:left;
+  margin-top:37px;
 }
   #tx-backend #question_wrapper .question{
     padding:5px 10px;
-    background-color: rgb(62, 182, 202);
+    background: white;
+    background: -moz-linear-gradient(top, white 0%, #F1F1F1 4%, #E2E2E2 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,white), color-stop(4%,#F1F1F1), color-stop(100%,#E2E2E2));
+    background: -webkit-linear-gradient(top, white 0%,#F1F1F1 4%,#E2E2E2 100%);
+    background: -o-linear-gradient(top, white 0%,#F1F1F1 4%,#E2E2E2 100%);
+    background: -ms-linear-gradient(top, white 0%,#F1F1F1 4%,#E2E2E2 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e2e2e2',GradientType=0 );
+    background: linear-gradient(top, white 0%,#F1F1F1 4%,#E2E2E2 100%);
+    -webkit-background-clip: padding-box;
+    border-top:solid #CECECE 1px;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
     display: block;
     line-height: 21px;
     padding-left: 10px;
     position:relative;
     min-height:53px;
+    border-bottom:solid #CBCBCB 1px;
   }
+    #tx-backend #question_wrapper .answers{
+      margin-bottom:10px;
+    }
+    #tx-backend #question_wrapper .answers,
+    #tx-backend #question_wrapper .question{
+      /*border-left:solid #CBCBCB 1px;
+      border-right:solid #CBCBCB 1px;*/
+    }
     #tx-backend #question_wrapper .question h4{
       font-weight:normal;
       font-size:1em;
@@ -108,45 +128,58 @@ h1, h2, h3, h4, h5, h6{
       position:absolute;
       top:5px;
       right:5px;
-      padding:3px 5px;
-      font-size:11px
+      width:26px;
+      height:26px;
+      min-width:0;
+      background-repeat:no-repeat;
+      background-position:center;
     }
     #tx-backend #question_wrapper .question .delete_question{
       position:absolute;
       top:35px;
       right:5px;
-      padding:3px 5px;
-      font-size:11px
+      width:26px;
+      height:26px;
+      min-width:0;
+      background-repeat:no-repeat;
+      background-position:center;
     }
   #tx-backend #question_wrapper .answer{
     position:relative;
     padding:10px;
-    border-top:solid #44b5cd 1px;
-    background:rgb(216, 240, 244);
+    padding-right:36px;
+    border-bottom:solid #CBCBCB 1px;
+    background:#FAFAFA;
     display:block;
     min-height:44px;
   }
   #tx-backend #question_wrapper .answer:hover{
-    background:rgb(216, 240, 244);
+    background:#f1f1f1;
   }
     #tx-backend #question_wrapper .answer .edit_answer{
       position:absolute;
       top:5px;
       right:5px;
-      padding:3px 5px;
-      font-size:11px
+      width:26px;
+      height:26px;
+      min-width:0;
+      background-repeat:no-repeat;
+      background-position:center;
     }
     #tx-backend #question_wrapper .answer .delete_answer{
       position:absolute;
       top:35px;
       right:5px;
-      padding:3px 5px;
-      font-size:11px
+      width:26px;
+      height:26px;
+      min-width:0;
+      background-repeat:no-repeat;
+      background-position:center;
     }
     #tx-backend #question_wrapper .answer h5{
       font-weight:bold;
       font-size:1em;
-      color:#44b5cd;
+      color:#333;
       text-shadow:0px 1px 0px #fff;
     }
     #tx-backend #question_wrapper .answer p{
@@ -154,17 +187,112 @@ h1, h2, h3, h4, h5, h6{
     }
 
 #tx-backend #question_list_wrapper{
-  width:220px;
+  width:280px;
   padding-right:15px;
   margin-right:14px;
-  border-right:1px solid #515151;
   float:left;
 }
+#tx-backend #start_question_wrapper h2,
+#tx-backend #question_list_wrapper h2{
+  margin:10px 0;
+  font-size:13px;
+}
   #tx-backend #question_list li{
-    margin-top:5px;
+    list-style:none;
+    margin:0;
     margin-bottom:10px;
+  }
+  #tx-backend #question_list li:last-child{
+    margin-bottom:0px;
+  }
+  #tx-backend #question_list{
+    margin-top:10px;
+    padding:10px 10px 10px 10px;
+    border-radius:4px 4px 4px 4px;
+    -moz-border-radius:4px 4px 4px 4px;
+    -webkit-border-radius:4px 4px 4px 4px;
+    -webkit-background-clip: padding-box;
+    background:#eee;
+    border:1px solid #eee;
+    /*box-shadow:1px 1px 1px rgba(188,188,188,1) inset; */
+    padding-right:5px;
+    overflow-x:hidden;
+    overflow-y:auto;
   }
     #tx-backend #question_list li.untitled a,
     #tx-backend #question_list li.new_question a{
-      font-style:italic;
+      display:inline-block;
+    }
+    #tx-backend #question_list li.question a{
+      display:block;
+      text-decoration:none;
+      line-height:25px;
+      padding:0 10px;
+      border-radius:4px 4px 4px 4px;
+      -moz-border-radius:4px 4px 4px 4px;
+      -webkit-border-radius:4px 4px 4px 4px;
+      -webkit-background-clip: padding-box;
+      color:#515151;
+      background: #666666; /* Old browsers */
+      background: -moz-linear-gradient(top, #ffffff 0%, #e3e3e3 4%, #ffffff 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(2%,#e3e3e3), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top, #ffffff 0%,#e3e3e3 4%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top, #ffffff 0%,#e3e3e3 4%,#ffffff 100%); /* Opera11.10+ */
+      background: -ms-linear-gradient(top, #ffffff 0%,#e3e3e3 4%,#ffffff 100%); /* IE10+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e3e3e3', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+      background: linear-gradient(top, #ffffff 0%,#e3e3e3 4%,#ffffff 100%); /* W3C */
+      border:1px solid #bcbcbc;
+    }
+
+    #tx-backend #question_list li.question.active a{
+      display:block;
+      text-decoration:none;
+      color:#fff;
+      line-height:25px;
+      padding:0 10px;
+      border-radius:4px 4px 4px 4px;
+      -moz-border-radius:4px 4px 4px 4px;
+      -webkit-border-radius:4px 4px 4px 4px;
+      -webkit-background-clip: padding-box;
+      background: #666666; /* Old browsers */
+      font-weight:bold;
+      text-shadow:1px 1px 0px rgba(0,0,0,0.8);
+      background: -moz-linear-gradient(top, #52575f 0%, #343943 4%, #343943 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#52575f), color-stop(2%,#343943), color-stop(100%,#343943)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* Opera11.10+ */
+      background: -ms-linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* IE10+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#52575f', endColorstr='#343943',GradientType=0 ); /* IE6-9 */
+      background: linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* W3C */
+      border:1px solid #515151;
+    }
+    #tx-backend #question_list li.question a:hover{
+      background:#fff;
+      text-decoration:none;
+      font-weight:normal;
+      color:#515151;
+      text-shadow:none;
+      border:1px solid #bcbcbc;
+    }
+    #tx-backend #question_list .new_question a{
+      display:block;
+      text-decoration:none;
+      color:#fff;
+      line-height:25px;
+      padding:0 10px;
+      border-radius:4px 4px 4px 4px;
+      -moz-border-radius:4px 4px 4px 4px;
+      -webkit-border-radius:4px 4px 4px 4px;
+      -webkit-background-clip: padding-box;
+      background: #666666; /* Old browsers */
+      font-weight:bold;
+      text-shadow:1px 1px 0px rgba(0,0,0,0.8);
+      background: -moz-linear-gradient(top, #52575f 0%, #343943 4%, #343943 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#52575f), color-stop(2%,#343943), color-stop(100%,#343943)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* Opera11.10+ */
+      background: -ms-linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* IE10+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#52575f', endColorstr='#343943',GradientType=0 ); /* IE6-9 */
+      background: linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* W3C */
+      border:1px solid #515151;
     }

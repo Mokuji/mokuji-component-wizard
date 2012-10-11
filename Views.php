@@ -90,7 +90,9 @@ class Views extends \dependencies\BaseViews
         'wizard' => $wizard !== null ? $wizard : tx('Sql')
           ->table('wizard', 'Wizards')
           ->pk($options->wizard_id->value)
-          ->execute_single()
+          ->execute_single(),
+        'url_targets' =>
+          array('_blank', '_parent', '_self', '_top')
       );
       
     }

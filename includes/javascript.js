@@ -129,6 +129,20 @@
           e.preventDefault();
           edit_answer('new');
         })
+
+        /* ---------- Click add_answer button ---------- */
+        .on('click', '.question_refer_box input[name="refer_to"]', function(e){
+
+          // e.preventDefault();
+
+          // $('.question_refer_box')
+            // .find('> div')
+              // .hide().end()
+            // .find('refer-to-'+$(e.target).attr('name')+'-wrapper')
+              // .show().end()
+          // ;
+
+        })
         
       ;
       
@@ -157,15 +171,17 @@
           e.preventDefault();
           to_question($(e.target).attr('data-id'));
         })
+
+        .parent()//Question list wrapper.
         
-        /* ---------- Click new question ---------- */
-        .on('click', 'li.new_question a', function(e){
-          e.preventDefault();
-          edit_question('new');
-        })
+          /* ---------- Click new question ---------- */
+          .on('click', '.new_question', function(e){
+            e.preventDefault();
+            edit_question('new');
+          })
         
       ;
-      
+            
     }
     
     function render_menu(){
@@ -190,8 +206,10 @@
     }
     
     function to_question(qid){
-      
+
       var question = questions[qid] ? questions[qid] : {};
+      question_list.find('li').removeClass('active');
+      question_list.find('a[data-id="'+question.id+'"]').closest('li').addClass('active');
       question_view.html($('#tx-wizard-question-view').tmpl(question));
       get_answers(qid);
       
@@ -225,7 +243,7 @@
       
       var target
         , answer;
-      
+
       if(aid === 'new'){
         answer = {
           source_question_id: active_question,
