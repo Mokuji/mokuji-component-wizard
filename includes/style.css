@@ -83,6 +83,15 @@ h1, h2, h3, h4, h5, h6{
   float:left;
   margin-top:37px;
 }
+#tx-backend #question_wrapper .small{
+  width:80px;
+}
+#tx-backend #question_wrapper .refer-to-url-wrapper .big{
+  width:310px;
+}
+#tx-backend #question_wrapper .big{
+  width:430px;
+}
   #tx-backend #question_wrapper .question{
     padding:5px 10px;
     background: white;
@@ -147,7 +156,6 @@ h1, h2, h3, h4, h5, h6{
   #tx-backend #question_wrapper .answer{
     position:relative;
     padding:10px;
-    padding-right:36px;
     border-bottom:solid #CBCBCB 1px;
     background:#FAFAFA;
     display:block;
