@@ -25,9 +25,8 @@
   <div class="question" data-id="${id}">
     <form class="edit-question-form form" method="{{if id}}PUT{{else}}POST{{/if}}" action="?rest=wizard/question{{if id}}/${id}{{/if}}">
       <input type="hidden" name="wizard_id" value="${wizard_id}" />
-      <input type="text" class="big large" name="title" value="${title}" placeholder="<?php echo ___('Title', 'ucfirst'); ?>" /><br />
-      <textarea name="description" class="big large" placeholder="<?php echo ___('Description', 'ucfirst'); ?>">${description}</textarea><br />
-      <textarea name="breadcrumb" class="big large" placeholder="<?php echo ___('Breadcrumb', 'ucfirst'); ?>">${breadcrumb}</textarea>
+      <input type="text" class="big large" name="title" value="${title}" placeholder="<?php echo ___('Title', 'ucfirst'); ?>" /><br>
+      <textarea name="description" class="big large tx-editor" placeholder="<?php echo ___('Description', 'ucfirst'); ?>">${description}</textarea>
       <div class="buttonHolder">
         <input type="button" class="button grey cancel" value="<?php echo ___('Cancel', 'ucfirst'); ?>" />
         <input type="submit" class="button black" value="<?php echo ___('Save question', 'ucfirst'); ?>" />
@@ -40,6 +39,7 @@
   <div class="answer" data-id="${id}">
     <input type="button" class="button icon-edit edit_answer" value="<?php echo ___('Edit answer', 'ucfirst'); ?>" />
     <input type="button" class="button icon-delete delete_answer" value="<?php echo ___('Delete answer', 'ucfirst'); ?>" />
+    <p class="breadcrumb">${breadcrumb}</p>
     <h5>${title}</h5>
     <p>${description}</p>
   </div>
@@ -49,8 +49,9 @@
   <div class="answer" data-id="${id}">
     <form class="edit-answer-form form" method="{{if id}}PUT{{else}}POST{{/if}}" action="?rest=wizard/answer{{if id}}/${id}{{/if}}">
       <input type="hidden" name="source_question_id" value="${source_question_id}" />
-      <input type="text" class="big large" name="title" value="${title}" placeholder="<?php echo ___('Title', 'ucfirst'); ?>" /><br />
-      <textarea name="description" class="big large" placeholder="<?php echo ___('Description', 'ucfirst'); ?>">${description}</textarea><br />
+      <input type="text" class="big large" name="title" value="${title}" placeholder="<?php echo ___('Title', 'ucfirst'); ?>" /><br>
+      <textarea name="description" class="big large tx-editor" placeholder="<?php echo ___('Description', 'ucfirst'); ?>">${description}</textarea><br>
+      <textarea name="breadcrumb" class="big large tx-editor" placeholder="<?php echo ___('Breadcrumb', 'ucfirst'); ?>">${breadcrumb}</textarea>
       
       <div class="question_refer_box">
         <h3>This question refers to:</h3>
@@ -67,7 +68,7 @@
           </select>
         </div>
 
-        <label>Or 2. <input type="radio" name="refer_to" value="url" hidden /> <?php echo ___('An URL'); ?></label>
+        <label>Or 2. <input type="radio" name="refer_to" value="url" hidden /> <?php echo ___('A URL'); ?></label>
         
         <div class="refer-to-url-wrapper">
           <input type="text" class="big large" name="url" value="${url}" placeholder="<?php echo ___('URL', 'u'); ?>" />

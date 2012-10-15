@@ -8,7 +8,23 @@ class DBUpdates extends \components\update\classes\BaseDBUpdates
   
   protected
     $component = 'wizard',
-    $updates = array();
+    $updates = array(
+      '1.1' => '1.2'
+    );
+  
+  public function update_to_1_2($current_version, $forced){
+    
+    tx('Sql')->query('
+      ALTER TABLE `#__wizard_questions`
+        DROP `breadcrumb`
+    ');
+    
+    tx('Sql')->query('
+      ALTER TABLE `#__wizard_answers`
+        ADD `breadcrumb` varchar(255) DEFAULT NULL
+    ');
+    
+  }
   
   public function install_1_1($dummydata, $forced)
   {

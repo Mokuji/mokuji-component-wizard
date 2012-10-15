@@ -109,11 +109,10 @@ class Json extends \dependencies\BaseViews
   protected function create_question($data, $params)
   {
     
-    $data = $data->having('wizard_id', 'title', 'description', 'breadcrumb')
+    $data = $data->having('wizard_id', 'title', 'description')
       ->wizard_id->validate('Wizard ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
       ->title->validate('Title', array('required', 'string', 'not_empty'))->back()
       ->description->validate('Description', array('string'))->back()
-      ->breadcrumb->validate('Breadcrumb', array('string'))->back()
     ;
     
     return tx('Sql')
@@ -129,11 +128,10 @@ class Json extends \dependencies\BaseViews
     $qid = $params->{0}
       ->validate('Question ID', array('required', 'number'=>'integer', 'gt'=>0));
     
-    $data = $data->having('wizard_id', 'title', 'description', 'breadcrumb')
+    $data = $data->having('wizard_id', 'title', 'description')
       ->wizard_id->validate('Wizard ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
       ->title->validate('Title', array('required', 'string', 'not_empty'))->back()
       ->description->validate('Description', array('string'))->back()
-      ->breadcrumb->validate('Breadcrumb', array('string'))->back()
     ;
     
     return tx('Sql')
@@ -202,9 +200,10 @@ class Json extends \dependencies\BaseViews
   protected function create_answer($data, $params)
   {
 
-    $data = $data->having('title', 'description', 'source_question_id', 'target_question_id', 'url', 'url_target')
+    $data = $data->having('title', 'description', 'source_question_id', 'target_question_id', 'url', 'url_target', 'breadcrumb')
       ->title->validate('Title', array('required', 'string', 'not_empty'))->back()
       ->description->validate('Description', array('string'))->back()
+      ->breadcrumb->validate('Breadcrumb', array('string'))->back()
       ->source_question_id->validate('Source question ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
       ->target_question_id->validate('Target question', array('number'=>'integer', 'gt'=>0))->back()
       ->url->validate('URL', array('url'))->back()
@@ -224,9 +223,10 @@ class Json extends \dependencies\BaseViews
     $aid = $params->{0}
       ->validate('Answer ID', array('required', 'number'=>'integer', 'gt'=>0));
     
-    $data = $data->having('title', 'description', 'source_question_id', 'target_question_id', 'url', 'url_target')
+    $data = $data->having('title', 'description', 'source_question_id', 'target_question_id', 'url', 'url_target', 'breadcrumb')
       ->title->validate('Title', array('required', 'string', 'not_empty'))->back()
       ->description->validate('Description', array('string'))->back()
+      ->breadcrumb->validate('Breadcrumb', array('string'))->back()
       ->source_question_id->validate('Source question ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
       ->target_question_id->validate('Target question', array('number'=>'integer', 'gt'=>0))->back()
       ->url->validate('URL', array('url'))->back()

@@ -19,6 +19,7 @@ $data->wizard->is('empty')
     <?php tx('ob')->script('wizard_module', "templates"); ?>
       
       <script id="tx-wizard-question-tmpl" type="text/x-jquery-tmpl">
+        <div class="breadcrumbs"></div>
         <div class="question" data-id="${id}">
           <input type="button" class="back_button" value="<?php echo ___('Go back', 'ucfirst'); ?>" />
           <h4>${title}</h4>
@@ -31,7 +32,16 @@ $data->wizard->is('empty')
         <a class="answer" data-id="${id}" {{if target_question_id}}data-target-question-id="${target_question_id}"{{else}}href="${url}" target="${url_target}"{{/if}}>
           <h5>${title}</h5>
           <p>${description}</p>
+          <p class="breadcrumb" style="display:none;">${breadcrumb}</p>
         </a>
+      </script>
+      
+      <script id="tx-wizard-breadcrumb-tmpl" type="text/x-jquery-tmpl">
+        <a href="#" class="breadcrumb" {{if id}}data-id="${id}" {{/if}}data-target-question-id="${target_question_id}">${breadcrumb}</a>
+      </script>
+      
+      <script id="tx-wizard-notfound-tmpl" type="text/x-jquery-tmpl">
+        <div class="error"><?php echo ___('Unable to load start question for wizard ID'); ?> ${id}.</div>
       </script>
       
     <?php tx('ob')->end(); ?>
@@ -42,7 +52,8 @@ $data->wizard->is('empty')
         
         $(function(){
           $('.wizard_<?php echo $uid ?>').txWizard({
-            wizard_id: <?php echo $wizard->id ?>
+            wizard_id: <?php echo $wizard->id ?>,
+            home_title: "<?php echo ___('Home', 'ucfirst'); ?>"
           });
         });
         
