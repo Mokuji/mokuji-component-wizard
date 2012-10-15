@@ -310,47 +310,88 @@
     var wizard = {}
       , question = {}
       , answers = {}
-      , view = $(this);
+      , view = $(this)
+      , last_question_id = 0
+      , getq
+      , geta;
     
     if(!options || !options.wizard_id){
       alert('Fatal error: no wizard ID given for wizard editor.');
       return;
     }
     
-    wizard.id = options.wizard_id;
+    function init(){
+
+      wizard.id = options.wizard_id;
+      
+      $.rest('GET', '?rest=wizard/wizard/'+options.wizard_id)
+        .done(function(result){
+          wizard = result;
+          load_question(wizard.start_question_id);
+        });
+
+    }
     
-    $.rest('GET', '?rest=wizard/wizard/'+options.wizard_id)
-      .done(function(result){
-        wizard = result;
-        
-        var getq = $.rest('GET', '?rest=wizard/question/'+wizard.start_question_id)
-          .done(function(result){
-            question = result;
-          });
-        
-        var geta = $.rest('GET', '?rest=wizard/answers/'+wizard.start_question_id)
-          .done(function(result){
-            answers = result;
-          });
-        
-        $.when(getq, geta)
-          .done(function(){
-            render_question();
-          });
-        
-      });
-    
+    function load_question(question_id){
+
+      getq = $.rest('GET', '?rest=wizard/question/'+question_id)
+        .done(function(result){
+          question = result;
+        });
+
+      geta = $.rest('GET', '?rest=wizard/answers/'+question_id)
+        .done(function(result){
+          answers = result;
+        });
+
+      $.when(getq, geta)
+        .done(function(){
+          render_question();
+          bind_events();
+        });
+
+    }
     function render_question(){
       view.html($('#tx-wizard-question-tmpl').tmpl(question));
       render_answers();
     };
     
-    function render_answers(){
+    function render_answers()
+    {
+     
       var av = view.find('.answers').html('');
+     
       $.each(answers, function(i){
+     
         av.append($('#tx-wizard-answer-tmpl').tmpl(answers[i]));
+     
+        if(last_question_id <= 0){
+          $('.back_button').attr('disabled', 'disabled')
+        }else{
+          $('.back_button').removeAttr('disabled')
+        }
+     
       });
+    
     }
+    function bind_events()
+    {
+
+      $('.answer').click(function(e){
+        var target_question_id = $(this).attr('data-target-question-id');
+        if(target_question_id !== undefined){
+          last_question_id = $(this).attr('data-id');
+          load_question(target_question_id);
+        }
+      });
+
+      $('.back_button:not(:disabled)').click(function(e){
+        load_question(last_question_id);
+      });
+
+    }
+
+    init();
     
   };
   

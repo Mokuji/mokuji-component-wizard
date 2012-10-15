@@ -20,7 +20,7 @@ $data->wizard->is('empty')
       
       <script id="tx-wizard-question-tmpl" type="text/x-jquery-tmpl">
         <div class="question" data-id="${id}">
-          <input type="button" class="button grey back_button" value="<?php echo ___('Go back', 'ucfirst'); ?>" />
+          <input type="button" class="back_button" value="<?php echo ___('Go back', 'ucfirst'); ?>" />
           <h4>${title}</h4>
           <p>${description}</p>
         </div>
