@@ -15,7 +15,7 @@
     <input type="button" class="button icon-edit edit_question" value="<?php echo ___('Edit question', 'ucfirst'); ?>" />
     <input type="button" class="button icon-delete delete_question" value="<?php echo ___('Delete question', 'ucfirst'); ?>" />
     <h4>${title}</h4>
-    <p>${description}</p>
+    <p>{{html $description}}</p>
   </div>
   <div class="answers"></div>
   <input type="button" class="button black add_answer" value="<?php echo ___('Add answer', 'ucfirst'); ?>" />
@@ -39,9 +39,9 @@
   <div class="answer" data-id="${id}">
     <input type="button" class="button icon-edit edit_answer" value="<?php echo ___('Edit answer', 'ucfirst'); ?>" />
     <input type="button" class="button icon-delete delete_answer" value="<?php echo ___('Delete answer', 'ucfirst'); ?>" />
-    <p class="breadcrumb">${breadcrumb}</p>
+    <!--<p class="breadcrumb">${breadcrumb}</p>-->
     <h5>${title}</h5>
-    <p>${description}</p>
+    <p>{{html $description}}</p>
   </div>
 </script>
 
@@ -49,12 +49,21 @@
   <div class="answer" data-id="${id}">
     <form class="edit-answer-form form" method="{{if id}}PUT{{else}}POST{{/if}}" action="?rest=wizard/answer{{if id}}/${id}{{/if}}">
       <input type="hidden" name="source_question_id" value="${source_question_id}" />
-      <input type="text" class="big large" name="title" value="${title}" placeholder="<?php echo ___('Title', 'ucfirst'); ?>" /><br>
+      
+      <h3><?php __('Title'); ?></h3>
+      
+      <p>
+        <input type="text" class="big large" name="title" value="${title}" placeholder="<?php echo ___('Title', 'ucfirst'); ?>" />
+      </p>
+      
+      <br /><h3><?php __('Description'); ?></h3>
       <textarea name="description" class="big large tx-editor" placeholder="<?php echo ___('Description', 'ucfirst'); ?>">${description}</textarea><br>
+      
+      <h3><?php __('Breadcrumb'); ?></h3>
       <textarea name="breadcrumb" class="big large tx-editor" placeholder="<?php echo ___('Breadcrumb', 'ucfirst'); ?>">${breadcrumb}</textarea>
       
       <div class="question_refer_box">
-        <h3>This question refers to:</h3>
+        <br /><h3>This question refers to:</h3>
         <label>1. <input type="radio"  selected name="refer_to" value="question" hidden /> <?php echo ___('Another question'); ?></label>
         
         <div class="refer-to-question-wrapper">

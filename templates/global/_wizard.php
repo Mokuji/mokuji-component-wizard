@@ -23,7 +23,7 @@ $data->wizard->is('empty')
         <div class="question" data-id="${id}">
           <input type="button" class="back_button" value="<?php echo ___('Go back', 'ucfirst'); ?>" />
           <h4>${title}</h4>
-          <p>${description}</p>
+          <p>{{html $description}}</p>
         </div>
         <div class="answers"></div>
       </script>
@@ -31,13 +31,13 @@ $data->wizard->is('empty')
       <script id="tx-wizard-answer-tmpl" type="text/x-jquery-tmpl">
         <a class="answer" data-id="${id}" {{if target_question_id}}data-target-question-id="${target_question_id}"{{else}}href="${url}" target="${url_target}"{{/if}}>
           <h5>${title}</h5>
-          <p>${description}</p>
-          <p class="breadcrumb" style="display:none;">${breadcrumb}</p>
+          <p>{{html $description}}</p>
+          <p class="breadcrumb" style="display:none;">{{html $breadcrumb}}</p>
         </a>
       </script>
       
       <script id="tx-wizard-breadcrumb-tmpl" type="text/x-jquery-tmpl">
-        <a href="#" class="breadcrumb" {{if id}}data-id="${id}" {{/if}}data-target-question-id="${target_question_id}">${breadcrumb}</a>
+        <a href="#" class="breadcrumb" {{if id}}data-id="${id}" {{/if}}data-target-question-id="${target_question_id}">{{html $breadcrumb}}</a>
       </script>
       
       <script id="tx-wizard-notfound-tmpl" type="text/x-jquery-tmpl">
