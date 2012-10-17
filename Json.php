@@ -101,7 +101,7 @@ class Json extends \dependencies\BaseViews
       ->is($options->wizard_id->is_set(), function($q)use($options){
         $q->where('wizard_id', $options->wizard_id);
       })
-      ->order('title')
+      ->order('lft')
       ->execute();
     
   }
@@ -118,7 +118,7 @@ class Json extends \dependencies\BaseViews
     return tx('Sql')
       ->model('wizard', 'Questions')
       ->set($data)
-      ->save();
+      ->hsave();
     
   }
   
@@ -142,7 +142,26 @@ class Json extends \dependencies\BaseViews
         throw new \exception\NotFound();
       })
       ->merge($data)
+      ->hsave();
+    
+  }
+  
+  protected function update_questions_hierarchy($data, $params)
+  {
+    
+    $data->questions->each(function($q){
+      
+      tx('Sql')->model('wizard', 'Questions')->merge($q->having(array(
+        'id' => 'item_id',
+        'lft' => 'left',
+        'rgt' => 'right'
+      )))
+      
       ->save();
+      
+    });
+    
+    return $this->get_questions(Data(), $params);
     
   }
   
@@ -164,7 +183,7 @@ class Json extends \dependencies\BaseViews
           $answer->delete();
         })
       ->back()
-      ->delete();
+      ->hdelete();
     
     return true;
     

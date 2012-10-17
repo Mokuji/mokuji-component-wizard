@@ -12,6 +12,7 @@
       , wizard = {}
       , active_question = 0
       , questions = {}
+      , question_hierarchy = []
       , answers = {}
       , question_list = null
       , question_view = null
@@ -50,6 +51,7 @@
         $.each(result, function(i){
           questions[result[i].id] = result[i];
         });
+        question_hierarchy = toHierarchy('lft', 'rgt', result);
       });
     
     var getw = $.rest('GET', '?rest=wizard/wizard/'+wizard_id)
@@ -80,7 +82,8 @@
             $.rest('DELETE', '?rest=wizard/question/'+qid)
               .done(function(result){
                 delete questions[qid];
-                render_menu();
+                remove_menu_item(qid);
+                question_list.trigger('sortupdate');
                 question_view.html('');
               });
           }
@@ -157,7 +160,42 @@
           e.preventDefault();
           to_question($(e.target).attr('data-id'));
         })
-
+        
+        /* ---------- Nested sortable ---------- */
+        .nestedSortable({
+			    disableNesting: 'no-nest',
+			    forcePlaceholderSize: true,
+			    handle: 'div',
+			    helper:	'clone',
+			    listType: 'ul',
+			    items: 'li',
+			    maxLevels: 7,
+			    opacity: .6,
+			    placeholder: 'placeholder',
+			    revert: 250,
+			    tabSize: 25,
+			    tolerance: 'pointer',
+			    toleranceElement: '> div'
+		    })
+        
+        /* ---------- Sort update ---------- */
+        .on('sortupdate', function(e){
+          
+          $.rest(
+            'PUT',
+            '?rest=wizard/questions_hierarchy/'+wizard_id,
+            {questions: $(e.target).nestedSortable('toArray', {startDepthCount: 0, attribute: 'rel', expression: (/()([0-9]+)/), omitRoot: true})}
+          ).done(function(result){
+            questions = {};
+            $.each(result, function(i){
+              questions[result[i].id] = result[i];
+            });
+            question_hierarchy = toHierarchy('lft', 'rgt', result);
+            render_menu();
+          });
+          
+        })
+        
         .parent()//Question list wrapper.
         
           /* ---------- Click new question ---------- */
@@ -172,13 +210,56 @@
     
     function render_menu(){
       
-      var target = question_list;
       start_question.find('option').remove();
-      target.find('.question').remove();
-      $.each(questions, function(i){
-        target.append($('#tx-wizard-question-li').tmpl(questions[i]));
-        start_question.append($('#tx-wizard-question-opt').tmpl($.extend({start_question_id: wizard.start_question_id}, questions[i])));
-      });
+      question_list.find('.question').remove();
+      
+      var renderer = function(list_target, option_target, data, depth){
+        
+        for(var i = 0; i < data.length; i++){
+          
+          var li = $('#tx-wizard-question-li').tmpl(data[i]);
+          list_target.append(li);
+          
+          option_target.append(
+            $('#tx-wizard-question-opt').tmpl($.extend({start_question_id: wizard.start_question_id, depth:depth}, data[i]))
+          );
+          
+          renderer($('<ul>').appendTo(li), option_target, data[i]._children, depth+1);
+          
+        }
+        
+      };
+      
+      renderer(question_list, start_question, question_hierarchy, 0);
+      
+    }
+    
+    function insert_menu_item(data)
+    {
+      
+      if(!data.id){
+        if(console && console.log) console.log('No data.id for insert_menu_item');
+        else alert('No data.id for insert_menu_item');
+        return;
+      }
+      
+      questions[data.id] = data;
+      question_list.prepend($('#tx-wizard-question-li').tmpl(data));
+      start_question.prepend($('#tx-wizard-question-opt').tmpl(data));
+      
+    }
+    
+    function remove_menu_item(id){
+      
+      if(!id){
+        if(console && console.log) console.log('No id for remove_menu_item');
+        else alert('No id for remove_menu_item');
+        return;
+      }
+      
+      
+      question_list.find('li[rel='+id+']').remove();
+      start_question.find('option[value='+id+']').remove();
       
     }
     
@@ -222,32 +303,34 @@
       question_view.find('.edit-question-form').restForm({
         success: function(question){
           
-          questions[question.id] = question;
-          render_menu();
-          
-          //If this is our only question for this wizard.
-          //And the start_question had not been set to this value yet.
-          //Do so now.
-          var count = 0;
+          //If we had no questions yet.
+          //Set this as the start question.
+          var has_more = false;
           for(var k in questions)
           {
             
             if(Object.prototype.hasOwnProperty.call(questions, k)){
-              count++;
-            }
-            
-            //Counting to two will do.
-            if(count > 1)
+              has_more = true;
               break;
+            }
             
           }
           
-          if(count == 1 && wizard.start_question_id != question.id){
+          if(!has_more && wizard.start_question_id != question.id){
             wizard.start_question_id = question.id;
             $.rest('PUT', '?rest=wizard/wizard/'+wizard.id, wizard)
               .done(function(result){
                 wizard = result;
               });
+          }
+          
+          //See if we're inserting or updating.
+          if(!questions[question.id]){
+            insert_menu_item(question);
+            question_list.trigger('sortupdate');
+          } else {
+            $.extend(questions[question.id], question);
+            render_menu();
           }
           
           to_question(question.id);

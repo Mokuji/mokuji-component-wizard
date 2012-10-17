@@ -1,12 +1,16 @@
-<?php namespace components\wizard; if(!defined('TX')) die('No direct access.'); ?>
+<?php namespace components\wizard; if(!defined('TX')) die('No direct access.');
+echo load_plugin('to_hierarchy');
+?>
 
 <script id="tx-wizard-question-opt" type="text/x-jquery-tmpl">
-  <option value="${id}"{{if id == start_question_id}} selected="selected"{{/if}}>${title}</option>
+  <option value="${id}"{{if depth}} style="padding-left:${10*depth}px;"{{/if}}{{if id == start_question_id}} selected="selected"{{/if}}>${title}</option>
 </script>
 
 <script id="tx-wizard-question-li" type="text/x-jquery-tmpl">
-  <li class="question{{if !title}} untitled{{/if}}">
-    <a href="#" data-id="${id}" >{{if title}}${title}{{else}}<?php echo ___("Untitled", "ucfirst"); ?>{{/if}}</a>
+  <li class="question{{if !title}} untitled{{/if}}" rel="${id}">
+    <div>
+      <a href="#" data-id="${id}" >{{if title}}${title}{{else}}<?php echo ___("Untitled", "ucfirst"); ?>{{/if}}</a>
+    </div>
   </li>
 </script>
 
@@ -71,7 +75,7 @@
             <option value="">-- Questions --</option>
             {{each questions}}
               {{if $value.id != source_question_id}}
-                <option value="${$value.id}"{{if target_question_id}}{{if target_question_id == $value.id}} selected="selected"{{/if}}{{/if}}>${$value.title}</option>
+                <option value="${$value.id}"{{if _depth}} style="padding-left:${10*_depth}px;"{{/if}}{{if target_question_id}}{{if target_question_id == $value.id}} selected="selected"{{/if}}{{/if}}>${$value.title}</option>
               {{/if}}
             {{/each}}
           </select>
@@ -106,6 +110,7 @@
   <a class="new_question button black" href="#"><?php echo ___('Add question', 'ucfirst'); ?></a>
   <ul id="question_list">
   </ul>
+  
   <script type="text/javascript">
     function resizeQuestionList(){
       var docHeight = $(document).height();
@@ -118,6 +123,7 @@
       resizeQuestionList();
     });
   </script>
+  
 </div>
 
 <div id="question_wrapper"></div>

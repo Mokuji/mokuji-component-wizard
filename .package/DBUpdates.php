@@ -1,6 +1,7 @@
 <?php namespace components\wizard; if(!defined('TX')) die('No direct access.');
 
 //Make sure we have the things we need for this class.
+tx('Component')->check('update');
 tx('Component')->load('update', 'classes\\BaseDBUpdates', false);
 
 class DBUpdates extends \components\update\classes\BaseDBUpdates
@@ -9,8 +10,32 @@ class DBUpdates extends \components\update\classes\BaseDBUpdates
   protected
     $component = 'wizard',
     $updates = array(
-      '1.1' => '1.2'
+      '1.1' => '1.2',
+      '1.2' => '1.3'
     );
+  
+  public function update_to_1_3($current_version, $forced)
+  {
+    
+    tx('Sql')->query('
+      ALTER TABLE `#__wizard_questions`
+        ADD `lft` int(10) UNSIGNED NOT NULL AFTER `id`,
+        ADD `rgt` int(10) UNSIGNED NOT NULL AFTER `lft`
+    ');
+    
+    //Insert starting heirarchy
+    $i = 1;
+    tx('Sql')
+      ->table('wizard', 'Questions')
+      ->execute()
+      ->each(function($question)use(&$i){
+        $question->lft->set($i++);
+        $question->rgt->set($i++);
+        $question->save();
+      });
+    
+    
+  }
   
   public function update_to_1_2($current_version, $forced){
     

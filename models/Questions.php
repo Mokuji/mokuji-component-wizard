@@ -7,8 +7,17 @@ class Questions extends \dependencies\BaseModel
   
     $table_name = 'wizard_questions',
     
+    $hierarchy = array(
+      'left' => 'lft',
+      'right' => 'rgt'
+    ),
+    
     $relations = array(
       'Answers'=>array('id' => 'Answers.source_question_id')
+    ),
+    
+    $secondary_keys = array(
+      'wizard_id'
     );
   
   public function get_answers()

@@ -205,9 +205,16 @@ h1, h2, h3, h4, h5, h6{
   margin:10px 0;
   font-size:13px;
 }
+  #tx-backend #question_list .placeholder {
+    background-color: #CFCFCF;
+  }
+  #tx-backend #question_list ul{
+    margin-left:15px;
+  }
   #tx-backend #question_list li{
     list-style:none;
     margin:0;
+    margin-top:3px;
     margin-bottom:10px;
   }
   #tx-backend #question_list li:last-child{
@@ -252,7 +259,7 @@ h1, h2, h3, h4, h5, h6{
       border:1px solid #bcbcbc;
     }
 
-    #tx-backend #question_list li.question.active a{
+    #tx-backend #question_list li.question.active > div > a{
       display:block;
       text-decoration:none;
       color:#fff;
