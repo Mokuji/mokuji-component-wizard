@@ -475,7 +475,10 @@
       
       var geta = $.rest('GET', '?rest=wizard/answers/'+question_id)
         .done(function(result){
-          answers = result;
+          answers = {};
+          $.each(result, function(i){
+            answers[result[i].id] = result[i];
+          });
         });
       
       $.when(getq, geta)
@@ -527,7 +530,7 @@
           var target_question_id = $(this).attr('data-target-question-id');
           if(target_question_id !== undefined){
             e.preventDefault();
-            answer_history.push({id:$(this).attr('data-id'), target_question_id:target_question_id, breadcrumb:$(this).find('.breadcrumb').html()});
+            answer_history.push(answers[$(this).attr('data-id')]);
             load_question(target_question_id);
           }
         })
