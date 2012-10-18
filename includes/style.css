@@ -84,10 +84,10 @@ h1, h2, h3, h4, h5, h6{
   margin-top:37px;
 }
 #tx-backend #question_wrapper .small{
-  width:80px;
+  width:50px;
 }
-#tx-backend #question_wrapper .refer-to-url-wrapper .big{
-  width:310px;
+#tx-backend #question_wrapper .refer-to-url-wrapper .medium{
+  width:250px;
 }
 #tx-backend #question_wrapper .big{
   width:430px;
@@ -174,6 +174,9 @@ h1, h2, h3, h4, h5, h6{
       background-repeat:no-repeat;
       background-position:center;
     }
+      #tx-backend #question_wrapper .edit-answer-form option.new_question{
+        font-style:italic;
+      }
     #tx-backend #question_wrapper .answer .delete_answer{
       position:absolute;
       top:35px;

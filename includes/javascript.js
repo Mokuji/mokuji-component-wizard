@@ -359,6 +359,26 @@
         question_view.find('.answer[data-id='+aid+']').replaceWith(target);
       }
       
+      target.find('option.new_question').click(function(e){
+        e.preventDefault();
+        $.rest('POST', '?rest=wizard/question', {
+          wizard_id: wizard_id,
+          title: window.prompt('Question title?')
+        }).done(function(question){
+          insert_menu_item(question);
+          $('#tx-wizard-question-opt').tmpl(question)
+            .insertAfter(target.find('option.new_question'))
+            .prop('selected', 'selected');
+        });
+      });
+      
+      target.find('.elfinder').elFinderButton({
+        closeOnGetFile: true,
+        getFileCallback: function(file){
+          target.find(':input[name=url]').val(file);
+        }
+      });
+      
       target.find('.tx-editor').each(function(){
         $(this).attr('id', 'tx-editor_'+Math.floor((Math.random()*1000)+1))
         tx_editor.init({selector: '#'+$(this).attr('id')});

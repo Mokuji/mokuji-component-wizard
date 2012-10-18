@@ -1,5 +1,6 @@
 <?php namespace components\wizard; if(!defined('TX')) die('No direct access.');
 echo load_plugin('to_hierarchy');
+echo load_plugin('elfinder');
 ?>
 
 <script id="tx-wizard-question-opt" type="text/x-jquery-tmpl">
@@ -71,8 +72,9 @@ echo load_plugin('to_hierarchy');
         <label>1. <input type="radio"  selected name="refer_to" value="question" hidden /> <?php echo ___('Another question'); ?></label>
         
         <div class="refer-to-question-wrapper">
-          <select class="big large" name="target_question_id" value="${target_question_id}">
+          <select class="big large" name="target_question_id">
             <option value="">-- Questions --</option>
+            <option value="" class="new_question"><?php echo ___('Add new question', 'ucfirst'); ?></option>
             {{each questions}}
               {{if $value.id != source_question_id}}
                 <option value="${$value.id}"{{if _depth}} style="padding-left:${10*_depth}px;"{{/if}}{{if target_question_id}}{{if target_question_id == $value.id}} selected="selected"{{/if}}{{/if}}>${$value.title}</option>
@@ -81,11 +83,12 @@ echo load_plugin('to_hierarchy');
           </select>
         </div>
 
-        <label>Or 2. <input type="radio" name="refer_to" value="url" hidden /> <?php echo ___('A URL'); ?></label>
+        <label>Or 2. <input type="radio" name="refer_to" value="url" hidden /> <?php echo ___('A URL'); ?>/<?php echo ___('file'); ?></label>
         
         <div class="refer-to-url-wrapper">
-          <input type="text" class="big large" name="url" value="${url}" placeholder="<?php echo ___('URL', 'u'); ?>" />
-          <input type="text" class="small" name="url_target" value="{{if url_target }}${url_target}{{else}}_blank{{/if}}" placeholder="<?php echo ___('URL target', 'ucfirst'); ?>" /><br />
+          <input type="text" class="medium" name="url" value="${url}" placeholder="<?php echo ___('URL', 'u'); ?>" />
+          <input type="text" class="small" name="url_target" value="{{if url_target }}${url_target}{{else}}_blank{{/if}}" placeholder="<?php echo ___('URL target', 'ucfirst'); ?>" />
+          <a class="button grey elfinder"><?php echo ___('Browse'); ?>...</a>
         </div>
         
       </div>
@@ -131,6 +134,7 @@ echo load_plugin('to_hierarchy');
 
 <script type="text/javascript">
 jQuery(function($){
+  window.elFinder.PLUGIN_URL = "<?php echo URL_PLUGINS.'elfinder/php/connector.php'; ?>";
   $.txWizardEditor(<?php echo $data->wizard->id; ?>, '#question_list', '#question_wrapper', '#start_question_id');
 });
 </script>

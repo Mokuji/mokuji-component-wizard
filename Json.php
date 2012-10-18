@@ -229,6 +229,8 @@ class Json extends \dependencies\BaseViews
       ->url_target->validate('URL target', array('string', 'in'=>array('_blank', '_parent', '_self', '_top')))->back()
     ;
     
+    string_if_empty($data, 'target_question_id', 'url', 'url_target');
+    
     return tx('Sql')
       ->model('wizard', 'Answers')
       ->set($data)
@@ -251,6 +253,8 @@ class Json extends \dependencies\BaseViews
       ->url->validate('URL', array('url'))->back()
       ->url_target->validate('URL target', array('string', 'in'=>array('_blank', '_parent', '_self', '_top')))->back()
     ;
+    
+    string_if_empty($data, 'target_question_id', 'url', 'url_target');
     
     return tx('Sql')
       ->table('wizard', 'Answers')
