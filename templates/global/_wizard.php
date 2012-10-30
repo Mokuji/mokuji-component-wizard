@@ -7,11 +7,11 @@ echo load_plugin('jquery_tmpl');
 
 $data->wizard->is('empty')
   
-  ->success(function(){
+  ->success(function()use($names){
     __($names->component, 'Wizard could not be found', 0, 'ucfirst');
   })
   
-  ->failure(function($wizard)use($uid){
+  ->failure(function($wizard)use($uid, $names){
     
     ?>
     <div class="wizard_<?php echo $uid ?>"></div>
