@@ -8,7 +8,7 @@ echo load_plugin('jquery_tmpl');
 $data->wizard->is('empty')
   
   ->success(function(){
-    __('Wizard could not be found', 0, 'ucfirst');
+    __($names->component, 'Wizard could not be found', 0, 'ucfirst');
   })
   
   ->failure(function($wizard)use($uid){
@@ -21,7 +21,7 @@ $data->wizard->is('empty')
       <script id="tx-wizard-question-tmpl" type="text/x-jquery-tmpl">
         <div class="breadcrumbs"></div>
         <div class="question" data-id="${id}">
-          <input type="button" class="back_button" value="<?php echo ___('Go back', 'ucfirst'); ?>" />
+          <input type="button" class="back_button" value="<?php __($names->component, 'Go back', 'ucfirst'); ?>" />
           <h4>${title}</h4>
           <div>{{html description}}</div>
         </div>
@@ -40,7 +40,7 @@ $data->wizard->is('empty')
       </script>
       
       <script id="tx-wizard-notfound-tmpl" type="text/x-jquery-tmpl">
-        <div class="error"><?php echo ___('Unable to load start question for wizard ID'); ?> ${id}.</div>
+        <div class="error"><?php __($names->component, 'Unable to load start question for wizard ID'); ?> ${id}.</div>
       </script>
       
     <?php tx('ob')->end(); ?>
@@ -52,7 +52,7 @@ $data->wizard->is('empty')
         $(function(){
           $('.wizard_<?php echo $uid ?>').txWizard({
             wizard_id: <?php echo $wizard->id ?>,
-            home_title: "<?php echo ___('Home', 'ucfirst'); ?>"
+            home_title: "<?php __($names->component, 'HOME_CRUMB', 'ucfirst'); ?>"
           });
         });
         

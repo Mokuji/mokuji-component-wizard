@@ -1,0 +1,43 @@
+{
+  
+  "WIZARD_VIEW_TITLE": "Wizard",
+  "WIZARD_VIEW_DESCRIPTION": "Wizard, geeft een stap-voor-stap begeleiding van gebruikers.",
+  
+  "WIZARDS_VIEW_TITLE": "Wizard beheer",
+  "WIZARDS_VIEW_DESCRIPTION": "",
+  
+  
+  
+  "A URL": "Een URL",
+  "Add answer": "Voeg antwoord toe",
+  "Add question": "Voeg vraag toe",
+  "Add new question": "Voeg nieuwe vraag toe",
+  "A different question": "Een andere vraag",
+  
+  "Breadcrumb": "Kruimel",
+  
+  "Delete answer": "Verwijder antwoord",
+  "Delete question": "Verwijder vraag",
+  
+  "Edit answer": "Wijzig antwoord",
+  "Edit question": "Wijzig vraag",
+  
+  "Go back": "Ga terug",
+  
+  "HOME_CRUMB": "Home",
+  
+  "Question list": "Vragenlijst",
+  
+  "Save answer": "Antwoord opslaan",
+  "Save question": "Vraag opslaan",
+  "Start question": "Startvraag",
+  
+  "This answer refers to": "Dit antwoord refereert naar",
+  
+  "Unable to load start question for wizard ID": "Kon startvraag niet laden voor wizard ID",
+  "Untitled": "Ongetiteld",
+  "URL target": "URL doel",
+  
+  "Wizard could not be found": "Wizard kon niet gevonden worden"
+  
+}
