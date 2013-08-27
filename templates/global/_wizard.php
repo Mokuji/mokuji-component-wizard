@@ -14,7 +14,7 @@ $data->wizard->is('empty')
   ->failure(function($wizard)use($uid, $names){
     
     ?>
-    <div class="wizard_<?php echo $uid ?>"></div>
+    <div class="tx-wizard wizard_<?php echo $uid ?>"></div>
     
     <?php tx('ob')->script('wizard_module', "templates"); ?>
       
@@ -52,7 +52,7 @@ $data->wizard->is('empty')
         $(function(){
           $('.wizard_<?php echo $uid ?>').txWizard({
             wizard_id: <?php echo $wizard->id ?>,
-            home_title: "<?php __($names->component, 'HOME_CRUMB', 'ucfirst'); ?>"
+            home_title: "<?php __($names->component, 'Start', 'ucfirst'); ?>"
           });
         });
         

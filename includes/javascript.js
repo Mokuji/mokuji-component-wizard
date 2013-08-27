@@ -257,7 +257,6 @@
         return;
       }
       
-      
       question_list.find('li[rel='+id+']').remove();
       start_question.find('option[value='+id+']').remove();
       

@@ -225,7 +225,7 @@ class Json extends \dependencies\BaseViews
       ->breadcrumb->validate('Breadcrumb', array('string'))->back()
       ->source_question_id->validate('Source question ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
       ->target_question_id->validate('Target question', array('number'=>'integer', 'gt'=>0))->back()
-      ->url->validate('URL', array('url'))->back()
+      // ->url->validate('string', array('url'))->back()
       ->url_target->validate('URL target', array('string', 'in'=>array('_blank', '_parent', '_self', '_top')))->back()
     ;
     
@@ -250,7 +250,7 @@ class Json extends \dependencies\BaseViews
       ->breadcrumb->validate('Breadcrumb', array('string'))->back()
       ->source_question_id->validate('Source question ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
       ->target_question_id->validate('Target question', array('number'=>'integer', 'gt'=>0))->back()
-      ->url->validate('URL', array('url'))->back()
+      // ->url->validate('URL', array('url'))->back()
       ->url_target->validate('URL target', array('string', 'in'=>array('_blank', '_parent', '_self', '_top')))->back()
     ;
     
