@@ -3,6 +3,11 @@
 class Actions extends \dependencies\BaseComponent
 {
 
+  protected $permissions = array(
+    'load_followup_question' => 0,
+    'load_answer' => 0
+  );
+
   protected function load_followup_question($data)
   {
     $qid = tx('Sql')->table('wizard', 'Answers')->pk($data->answer_id)->join('Questions', $q)->execute_single($q)->id;

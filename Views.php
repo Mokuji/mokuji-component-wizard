@@ -2,7 +2,13 @@
 
 class Views extends \dependencies\BaseViews
 {
-  
+
+  protected
+    $permissions = array(
+      'wizard' => 0,
+      'wizards' => 0
+    );
+
   protected function wizard($options)
   {
     

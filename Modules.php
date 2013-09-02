@@ -3,6 +3,11 @@
 class Modules extends \dependencies\BaseViews
 {
 
+  protected
+    $permissions = array(
+      'wizard' => 0
+    );
+
   protected function wizard($options)
   {
     
