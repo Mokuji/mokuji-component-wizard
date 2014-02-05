@@ -1,0 +1,13 @@
+{
+  
+  "javascript": [
+    "NodesController.js"
+  ],
+  
+  "templates": {
+    "contentTab": "contentTab.tmpl.php"
+  },
+  
+  "controller": "cmsBackend.wizard.NodesController"
+  
+}

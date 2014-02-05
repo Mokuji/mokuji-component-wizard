@@ -10,10 +10,64 @@ class DBUpdates extends \components\update\classes\BaseDBUpdates
   protected
     $component = 'wizard',
     $updates = array(
+      
       '1.1' => '1.2',
       '1.2' => '1.3',
-      '1.3' => '1.4'
+      '1.3' => '1.4',
+      
+      '1.4' => '0.2.0-beta'
+      
     );
+  
+  public function update_to_0_2_0_beta($current_version, $forced)
+  {
+    
+    if($forced){
+      mk('Sql')->query("DROP TABLE IF EXISTS `#__wizard__nodes`");
+    }
+    
+    mk('Sql')->query('
+      CREATE TABLE `#__wizard__nodes` (
+        `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `parent_node_id` int(10) UNSIGNED NULL DEFAULT NULL,
+        `answer_title` varchar(255) NOT NULL,
+        `description` text NOT NULL,
+        `question_title` varchar(255) NULL DEFAULT NULL,
+        `url` varchar(255) NULL DEFAULT NULL,
+        `url_target` varchar(255) NULL DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        INDEX `parent_node_id` (`parent_node_id`)
+      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8
+    ');
+    
+    mk('Sql')->query('
+      CREATE TABLE `#__wizard__node_pages` (
+        `page_id` int(10) UNSIGNED NOT NULL,
+        `node_id` int(10) UNSIGNED NOT NULL,
+        PRIMARY KEY (`page_id`)
+      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8
+    ');
+    
+    $this->queue(array(
+      'component' => 'cms',
+      'min_version' => '0.4.1-beta'
+      ), function($version){
+        
+        //Make page type.
+        mk('Component')->helpers('cms')->_call('ensure_pagetypes', array(
+          array(
+            'name' => 'wizard',
+            'title' => 'Wizard'
+          ),
+          array(
+            'nodes' => 'PAGETYPE'
+          )
+        ));
+        
+      }
+    ); //END - Queue CMS
+    
+  }
   
   public function update_to_1_4($current_version, $forced)
   {
