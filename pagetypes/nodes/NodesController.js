@@ -9,19 +9,35 @@
     
     //Define the elements for jsFramework to keep track of.
     elements: {
-      'title': '#text-contentTab-form .title',
-      'contentForm': '#text-contentTab-form'
+      // 'title': '#text-contentTab-form .title',
+      'nodeEditForm': '.wizard-edit-node',
+      'optionsRadio': '.option input[type="radio"]'
     },
     
     events:{
       
-      //Let findability know we have a recommended default.
-      'keyup on title': function(e){
-        app.Page.Tabs.findabilityTab.recommendTitle(
-          $(e.target).val(),
-          $(e.target).closest('.multilingual-section').attr('data-language-id')
-        );
+      'change on optionsRadio': function(e){
+        
+        //Disable all options.
+        this.nodeEditForm
+          .find('.option-based :input:not([name="option"])')
+          .attr('disabled', 'disabled');
+        
+        //Enable currently selected option.
+        this.nodeEditForm
+          .find('[name="option"]:checked')
+          .closest('.option-based').find(':disabled')
+          .removeAttr('disabled');
+        
       }
+      
+      // //Let findability know we have a recommended default.
+      // 'keyup on title': function(e){
+      //   app.Page.Tabs.findabilityTab.recommendTitle(
+      //     $(e.target).val(),
+      //     $(e.target).closest('.multilingual-section').attr('data-language-id')
+      //   );
+      // }
       
     },
     
@@ -54,37 +70,21 @@
     //When rendering of the tab templates has been done, do some final things.
     afterRender: function(){
       
-      //Just to be sure, push all recommendations to the findability tab.
-      this.title.trigger('blur');
-      
       //Turn the form on the content tab into a REST form.
-      this.contentForm.restForm({success: this.proxy(this.afterSave)});
+      this.nodeEditForm.restForm({success: this.proxy(this.afterSave)});
+      this.optionsRadio.trigger('change');
       
-      //Create unique id for the text editors.
-      this.contentForm.find('textarea.editor').each(function(){
-        var that = $(this);
-        that.attr('id', that.attr('id')+Math.floor((Math.random()*100000)+1));
-        tx_editor.init({selector:'#'+that.attr('id')});
-      });
-
-      //Hide description field by default, init click event handler.
-      this.contentForm
-        .find('.toggle-wrapper.description .trigger').on('click', function(e){
-          e.preventDefault();
-          $(this).closest('.toggle-wrapper').toggleClass('open');
-        });
-
     },
     
     //Saves the data currently present in the different tabs controlled by this controller.
     save: function(e, pageId){
       
-      return this.contentForm.trigger('submit');
+      // return this.nodeEditForm.trigger('submit');
       
     },
     
     afterSave: function(data){
-      this.contentForm.find('[name=id]').val(data.id);
+      this.nodeEditForm.attr('method', 'PUT');
     }
     
   });

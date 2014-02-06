@@ -5,7 +5,8 @@
   ],
   
   "templates": {
-    "contentTab": "contentTab.tmpl.php"
+    "contentTab": "contentTab.tmpl.php",
+    "editNode": "editNode.tmpl.php"
   },
   
   "controller": "cmsBackend.wizard.NodesController"

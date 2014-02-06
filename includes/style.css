@@ -76,6 +76,41 @@ h1, h2, h3, h4, h5, h6{
     }
 */
 
+/* New backend */
+
+.wizard-node-tree{
+  background:#ccc;
+  width:350px;
+  margin-right:25px;
+  height:500px;
+  float:left;
+}
+
+.wizard-node-editor{
+  float:left;
+}
+
+.wizard-edit-node label.option{
+  margin:0;
+}
+.wizard-edit-node label.option input{
+  margin-left:0;
+  vertical-align:bottom;
+}
+.wizard-edit-node fieldset{
+  position:relative;
+  margin-left:70px;
+  margin-bottom:40px;
+}
+.wizard-edit-node fieldset legend{
+  position:absolute;
+  left:-70px;
+  top:0;
+}
+.wizard-edit-node fieldset .ctrlHolder{
+  border:none;
+}
+
 /* Backend */
 #tx-backend #question_wrapper{
   min-width:450px;
