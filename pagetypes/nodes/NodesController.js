@@ -48,9 +48,8 @@
 
         e.preventDefault();
 
-        $.rest('POST', app.options.url_base+'/rest/wizard/node_below', {
-          page_id: self.pageId,
-          reference_node_id: $(e.target).data('id')
+        $.rest('POST', app.options.url_base+'/rest/wizard/node_below/'+$(e.target).data('id'), {
+          page_id: self.pageId
         }).done(function(){
           self.loadTree();
         });
@@ -217,12 +216,13 @@
       
       var renderer = function(list_target, data, depth){
         
+        if(data.length > 0) console.log(data);
+        
         for(var i = 0; i < data.length; i++){
           
-          var node = self.templateNode(data[i]);
-          list_target.append(node);
-                    
-          renderer($('<ul>').appendTo(node), data[i]._children, depth+1);
+          var $node = $(self.renderTemplate('node', data[i]));
+          list_target.append($node);
+          renderer($('<ul>').appendTo($node), data[i]._children, depth+1);
           
         }
         
@@ -231,18 +231,7 @@
       renderer(self.nodeList, self.nodeHierarchy, 0);
       
     },
-
-    //Templates one node based on entry data.
-    templateNode: function(data){
-
-      console.log(data);
-
-      return this.definition.templates.node.tmpl({
-        data: data
-      });
-
-    },
-
+    
     //Edit entry.
     editEntry: function(id){
       

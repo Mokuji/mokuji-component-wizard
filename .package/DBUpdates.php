@@ -24,7 +24,7 @@ class DBUpdates extends \components\update\classes\BaseDBUpdates
 
     mk('Sql')->query('
       ALTER TABLE `#__wizard__nodes`
-        ADD COLUMN `page_id` INT(10) UNSIGNED NOT NULL AFTER `id`;
+        ADD COLUMN `page_id` INT(10) UNSIGNED NOT NULL AFTER `id`,
         ADD COLUMN `lft` INT(10) UNSIGNED NOT NULL AFTER `page_id`,
         ADD COLUMN `rgt` INT(10) UNSIGNED NOT NULL AFTER `lft`,
         DROP COLUMN `parent_node_id`
@@ -34,7 +34,7 @@ class DBUpdates extends \components\update\classes\BaseDBUpdates
       DROP TABLE `#__wizard__node_pages`
     ');
 
-  },
+  }
 
   public function update_to_0_2_0_beta($current_version, $forced)
   {

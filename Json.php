@@ -306,7 +306,7 @@ class Json extends \dependencies\BaseViews
     return tx('Sql')
       ->table('wizard', 'Nodes')
       ->is($options->page_id->is_set(), function($q)use($options){
-        $q->where('page_id', $options->wizard_id);
+        $q->where('page_id', $options->page_id);
       })
       ->order('lft')
       ->execute();
@@ -336,20 +336,19 @@ class Json extends \dependencies\BaseViews
     
   }
 
-  protected function post_node_below($data, $params){
-
-    $index = $this->table('Nodes')
-        ->where('id', $data->reference_node_id)
-        ->execute_single()
-        ->rgt->get();
-
-    $data->reference_node_id->un_set();
-
+  protected function post_node_below($data, $params)
+  {
+    
+    if(!$this->table('Nodes')
+        ->where('id', $params->{0})
+        ->count()->get('boolean'))
+      throw new \exception\NotFound('Invalid ID given for parent node.');
+    
     return tx('Sql')
       ->model('wizard', 'Nodes')
-      ->set($data)
-      ->hsave($data->page_id, $index);
-
+      ->set($data->having('page_id'))
+      ->hsave($params->{0});
+    
   }
 
   protected function create_node($data, $params)
