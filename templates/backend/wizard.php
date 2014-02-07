@@ -65,7 +65,7 @@ echo load_plugin('elfinder');
       <textarea name="description" class="big large tx-editor" placeholder="<?php __('Description', 0, 'ucfirst'); ?>">${description}</textarea><br>
       
       <h3><?php __($names->component, 'Breadcrumb'); ?></h3>
-      <textarea name="breadcrumb" class="big large tx-editor" placeholder="<?php __($names->component, 'Breadcrumb', 'ucfirst'); ?>">${breadcrumb}</textarea>
+      <input type="text" name="breadcrumb" class="big large" placeholder="<?php __($names->component, 'Breadcrumb', 'ucfirst'); ?>" value="${breadcrumb}" />
       
       <div class="question_refer_box">
         <br /><h3><?php __($names->component, 'This answer refers to', 'ucfirst'); ?>:</h3>

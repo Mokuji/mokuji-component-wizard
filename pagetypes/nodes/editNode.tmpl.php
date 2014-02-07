@@ -1,13 +1,15 @@
 <?php namespace components\wizard; if(!defined('MK')) die('No direct access.'); ?>
 
-<form class="form wizard-edit-node" action="?rest=wizard/nodes/${data.id}" method="{{if data.id}}PUT{{else}}POST{{/if}}">
+<form class="form wizard-edit-node" action="?rest=wizard/node/${data.id}" method="{{if data.id}}PUT{{else}}POST{{/if}}">
   
+  <input type="hidden" name="page_id" value="${page_id}" />
+
   <fieldset>
     <div class="ctrlHolder">
       <label><?php __('Answer'); ?>:</label>
       <input class="big" type="text" name="answer_title" value="${data.answer_title}" placeholder="<?php __($component, 'Example answer'); ?>." />
     </div>
-    <i>Home > Bla > Voorbeeld</i>
+    <!-- <i>Home > Bla > Voorbeeld</i> -->
   </fieldset>
   
   <fieldset>
@@ -34,10 +36,12 @@
     <div class="ctrlHolder">
       <label><?php __($component, 'Open in'); ?>:</label>
       <select name="url_target">
-        <option value="" {{if data.url_target == ''}}checked="checked"{{/if}}><?php __($component, 'Same page'); ?></option>
-        <option value="_blank" {{if data.url_target == '_blank'}}checked="checked"{{/if}}><?php __($component, 'New page'); ?></option>
+        <option value="" {{if data.url_target == ''}}checked="checked"{{/if}}><?php __($component, 'Same window'); ?></option>
+        <option value="_blank" {{if data.url_target == '_blank'}}checked="checked"{{/if}}><?php __($component, 'New window'); ?></option>
       </select>
     </div>
   </fieldset>
+
+  <input type="submit" value="Save" />
   
 </form>

@@ -358,8 +358,13 @@
         question_view.find('.answer[data-id='+aid+']').replaceWith(target);
       }
       
-      target.find('option.new_question').click(function(e){
+      target.find('[name="target_question_id"]').on('change', function(e){
+        
         e.preventDefault();
+
+        if( ! $(this).find('option:selected').hasClass('new_question') )
+          return
+
         $.rest('POST', '?rest=wizard/question', {
           wizard_id: wizard_id,
           title: window.prompt('Question title?')
@@ -544,7 +549,7 @@
         /* ---------- Breadcrumb click ---------- */
         .on('click', '.breadcrumbs a.breadcrumb', function(e){
           e.preventDefault();
-          var target_index = $(e.target).index();
+          var target_index = $(e.target).closest('li').index();
           while(answer_history.length > target_index + 1)
             answer_history.pop();
           load_question(answer_history[answer_history.length-1].target_question_id);

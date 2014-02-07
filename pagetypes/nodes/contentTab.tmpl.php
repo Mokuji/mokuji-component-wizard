@@ -2,8 +2,8 @@
 
 <div class="clearfix">
   
-  <div class="wizard-node-tree">
-    <p>Iets met een nodes tree.</p>
+  <div class="wizard-node-view">
+    {{html template('nodeList')}}
   </div>
 
   <div class="wizard-node-editor">

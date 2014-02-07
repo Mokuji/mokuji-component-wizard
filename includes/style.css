@@ -78,13 +78,75 @@ h1, h2, h3, h4, h5, h6{
 
 /* New backend */
 
-.wizard-node-tree{
+.wizard-node-view{
   background:#ccc;
-  width:350px;
   margin-right:25px;
-  height:500px;
   float:left;
+  width:350px;
+  height:500px;
 }
+
+  .add-node{
+    margin:25px;
+    display:block;
+  }
+
+  .wizard-node-tree,
+  .wizard-node-tree li{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .wizard-node-tree{
+    margin:25px 25px;
+  }
+    .wizard-node-tree li{
+      position:relative;
+    }
+    .wizard-node-tree li li{
+      margin-left:25px;
+    }
+      .wizard-node-tree a{
+        margin-bottom:8px;
+        padding:0 10px;
+        box-sizing:border-box;
+        background-color:#545454;
+        display:block;
+        height:35px;
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+        line-height: 35px;
+        color:#fff;
+        text-decoration:none;
+        border-radius:3px;
+      }
+        .wizard-node-tree a:hover,
+        .wizard-node-tree a.active{
+          background-color:#282727;
+        }
+ 
+      .wizard-node-tree .add-node-below{
+        width:45px;
+        min-width:0;
+        height:35px;
+        background:transparent;
+        color:#fff;
+        border-left:solid #787878 1px !important;
+        font-size:2em;
+        font-weight:bold;
+        border:0;
+        cursor:pointer;
+        position:absolute;
+        right:0;
+        top:0;
+        padding:0;
+        margin:0;
+      }
+        .wizard-node-tree .add-node-below:hover{
+          background-color:#282727;
+        }
+
 
 .wizard-node-editor{
   float:left;
@@ -119,7 +181,7 @@ h1, h2, h3, h4, h5, h6{
   margin-top:37px;
 }
 #tx-backend #question_wrapper .small{
-  width:50px;
+  width:60px;
 }
 #tx-backend #question_wrapper .refer-to-url-wrapper .medium{
   width:250px;
@@ -211,6 +273,10 @@ h1, h2, h3, h4, h5, h6{
     }
       #tx-backend #question_wrapper .edit-answer-form option.new_question{
         font-style:italic;
+      }
+      #tx-backennd #question_wrapper .elfinder{
+        width: 100px;
+        line-height: 25px;
       }
     #tx-backend #question_wrapper .answer .delete_answer{
       position:absolute;
@@ -349,3 +415,4 @@ h1, h2, h3, h4, h5, h6{
       background: linear-gradient(top, #52575f 0%,#343943 4%,#343943 100%); /* W3C */
       border:1px solid #515151;
     }
+

@@ -1,12 +1,15 @@
 {
   
   "javascript": [
+    "toHierarchy.js",
     "NodesController.js"
   ],
   
   "templates": {
     "contentTab": "contentTab.tmpl.php",
-    "editNode": "editNode.tmpl.php"
+    "editNode": "editNode.tmpl.php",
+    "nodeList": "nodeList.tmpl.php",
+    "node": "node.tmpl.php"
   },
   
   "controller": "cmsBackend.wizard.NodesController"

@@ -10,8 +10,14 @@
     //Define the elements for jsFramework to keep track of.
     elements: {
       // 'title': '#text-contentTab-form .title',
+      'nodeView': '.wizard-node-view',
+      'nodeList': '.wizard-node-tree',
+      'nodeEditView': '.wizard-node-editor',
       'nodeEditForm': '.wizard-edit-node',
-      'optionsRadio': '.option input[type="radio"]'
+      'optionsRadio': '.option input[type="radio"]',
+      'node': '.wizard-node-tree a',
+      'addNodeBtn': '.add-node',
+      'addNodeBelowBtn': '.add-node-below'
     },
     
     events:{
@@ -29,8 +35,33 @@
           .closest('.option-based').find(':disabled')
           .removeAttr('disabled');
         
+      },
+
+      'click on addNodeBtn': function(e){
+        e.preventDefault();
+        this.editEntry();
+      },
+
+      'click on addNodeBelowBtn': function(e){
+
+        var self = this;
+
+        e.preventDefault();
+
+        $.rest('POST', app.options.url_base+'/rest/wizard/node_below', {
+          page_id: self.pageId,
+          reference_node_id: $(e.target).data('id')
+        }).done(function(){
+          self.loadTree();
+        });
+
+      },
+
+      'click on node': function(e){
+        e.preventDefault();
+        this.editEntry($(e.target).data('id'));
       }
-      
+
       // //Let findability know we have a recommended default.
       // 'keyup on title': function(e){
       //   app.Page.Tabs.findabilityTab.recommendTitle(
@@ -47,7 +78,10 @@
       var self = this
         , D = $.Deferred()
         , P = D.promise();
-      
+
+      this.pageId = pageId;
+      this.nodes = [];
+
       //Retrieve input data from the server based on the page ID
       $.rest('GET', app.options.url_base+'/rest/wizard/nodes', {
         pid: pageId
@@ -73,6 +107,8 @@
       //Turn the form on the content tab into a REST form.
       this.nodeEditForm.restForm({success: this.proxy(this.afterSave)});
       this.optionsRadio.trigger('change');
+      this.initTree();
+      this.loadTree();
       
     },
     
@@ -85,8 +121,163 @@
     
     afterSave: function(data){
       this.nodeEditForm.attr('method', 'PUT');
-    }
+    },
     
+    initTree: function(data){
+      
+      var self = this;
+      self.nodeHierarchy = null;
+
+      self.nodeList
+        
+        /* ---------- Click question ---------- */
+        // .on('click', 'li.question a', function(e){
+        //   e.preventDefault();
+        //   to_question($(e.target).attr('data-id'));
+        // })
+        
+        /* ---------- Nested sortable ---------- */
+        .nestedSortable({
+          disableNesting: 'no-nest',
+          forcePlaceholderSize: true,
+          handle: 'div',
+          helper: 'clone',
+          listType: 'ul',
+          items: 'li',
+          maxLevels: 7,
+          opacity: .6,
+          placeholder: 'placeholder',
+          revert: 250,
+          tabSize: 25,
+          tolerance: 'pointer',
+          toleranceElement: '> div'
+        })
+        
+        /* ---------- Sort update ---------- */
+        .on('sortupdate', function(e){
+          
+          $.rest(
+            'PUT',
+            '?rest=wizard/nodes_hierarchy/'+self.pageId,
+            {nodes: $(e.target).nestedSortable('toArray', {startDepthCount: 0, attribute: 'rel', expression: (/()([0-9]+)/), omitRoot: true})}
+          ).done(function(result){
+            nodes = {};
+            $.each(result, function(i){
+              nodes[result[i].id] = result[i];
+            });
+            self.nodeHierarchy = toHierarchy('lft', 'rgt', result);
+            self.loadTree();
+          });
+          
+        });
+        
+        // question_list
+        
+        //   /* ---------- Click new question ---------- */
+        //   .on('click', '.new_question', function(e){
+        //     e.preventDefault();
+        //     edit_question('new');
+        //   });
+        
+      ;
+            
+    },
+
+    loadTree: function(data){
+
+      var self = this;
+
+      $.rest('GET', app.options.url_base+'/rest/wizard/nodes', {
+        pid: self.pageId
+      })
+      
+      .done(function(d){
+
+        $.each(d, function(i){
+          self.nodes[d[i].id] = d[i];
+        });
+        self.nodeHierarchy = toHierarchy('lft', 'rgt', d);
+
+        self.renderTree();
+
+      });
+
+    },
+
+    renderTree: function(data){
+      
+      // if(!data){
+      //   console.log('0 nodes were found.');
+      //   return;
+      // }
+
+      var self = this;
+
+      self.nodeList.find('li').remove();
+      
+      var renderer = function(list_target, data, depth){
+        
+        for(var i = 0; i < data.length; i++){
+          
+          var node = self.templateNode(data[i]);
+          list_target.append(node);
+                    
+          renderer($('<ul>').appendTo(node), data[i]._children, depth+1);
+          
+        }
+        
+      };
+
+      renderer(self.nodeList, self.nodeHierarchy, 0);
+      
+    },
+
+    //Templates one node based on entry data.
+    templateNode: function(data){
+
+      console.log(data);
+
+      return this.definition.templates.node.tmpl({
+        data: data
+      });
+
+    },
+
+    //Edit entry.
+    editEntry: function(id){
+      
+      var self = this;
+      var hasFeedback = true;//#TODO
+
+      $.rest('GET', '?rest=wizard/node/'+(id ? id : null)).done(function(data){
+        
+        self.nodeEditView.empty();
+        
+        var form = self.definition.templates.editNode.tmpl({
+          data: data,
+          page_id: self.pageId,
+        }).appendTo(self.nodeEditView);
+
+        form.restForm({
+          beforeSubmit: function(){
+            if(hasFeedback) app.Feedback.working('Saving entry...').startBuffer();
+          },
+          success: function(entry){
+            self.loadTree();
+            if(hasFeedback) app.Feedback.success('Saving entry succeeded.').stopBuffer();
+          },
+          error: function(){
+            if(hasFeedback) app.Feedback.error('Saving entry failed.').stopBuffer();
+          }
+        });
+
+        //Refresh elements.
+        self.refreshElements();
+
+      });
+      
+    }
+
   });
   
   //Export the namespaced class.

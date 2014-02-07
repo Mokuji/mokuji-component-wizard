@@ -286,5 +286,129 @@ class Json extends \dependencies\BaseViews
     return true;
     
   }
+ 
+  /**
+   * Nodes
+   */
+  protected function get_nodes($options, $params)
+  {
+    
+    $params->{0}->is('set', function($page_id)use($options){
+      $options->merge(array(
+        'page_id' => $page_id
+      ));
+    });
+    
+    $options = $options->having('page_id')
+      ->page_id->validate('Page ID', array('number'=>'integer', 'gt'=>0))->back()
+    ;
+    
+    return tx('Sql')
+      ->table('wizard', 'Nodes')
+      ->is($options->page_id->is_set(), function($q)use($options){
+        $q->where('page_id', $options->wizard_id);
+      })
+      ->order('lft')
+      ->execute();
+    
+  }
+
+  protected function get_node($options, $params)
+  {
+    
+    $params->{0}->is('set', function($node_id)use($options){
+      $options->merge(array(
+        'node_id' => $node_id
+      ));
+    });
+    
+    // $options = $options->having('node_id')
+    //   ->node_id->validate('Node ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
+    // ;
+    
+    return tx('Sql')
+      ->table('wizard', 'Nodes')
+      ->pk($options->node_id)
+      ->execute_single()
+      ->is('empty', function(){
+        return tx('Sql')->model('wizard', 'Nodes');
+      });
+    
+  }
+
+  protected function post_node_below($data, $params){
+
+    $index = $this->table('Nodes')
+        ->where('id', $data->reference_node_id)
+        ->execute_single()
+        ->rgt->get();
+
+    $data->reference_node_id->un_set();
+
+    return tx('Sql')
+      ->model('wizard', 'Nodes')
+      ->set($data)
+      ->hsave($data->page_id, $index);
+
+  }
+
+  protected function create_node($data, $params)
+  {
+    
+    // $data = $data->having('wizard_id', 'title', 'description')
+    //   ->wizard_id->validate('Wizard ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
+    //   ->title->validate('Title', array('required', 'string', 'not_empty'))->back()
+    //   ->description->validate('Description', array('string'))->back()
+    // ;
+    
+    return tx('Sql')
+      ->model('wizard', 'Nodes')
+      ->set($data)
+      ->hsave();
+    
+  }
   
+  protected function update_node($data, $params)
+  {
+    
+    $node_id = $params->{0}
+      ->validate('Node ID', array('required', 'number'=>'integer', 'gt'=>0));
+    
+    // $data = $data->having('node_id', 'title', 'description')
+    //   ->wizard_id->validate('Wizard ID', array('required', 'number'=>'integer', 'gt'=>0))->back()
+    //   ->title->validate('Title', array('required', 'string', 'not_empty'))->back()
+    //   ->description->validate('Description', array('string'))->back()
+    // ;
+    
+    return tx('Sql')
+      ->table('wizard', 'Nodes')
+      ->pk($node_id)
+      ->execute_single()
+      ->is('empty', function(){
+        throw new \exception\NotFound();
+      })
+      ->merge($data)
+      ->hsave();
+    
+  }
+  
+  protected function update_nodes_hierarchy($data, $params)
+  {
+    
+    $data->nodes->each(function($q){
+      
+      tx('Sql')->model('wizard', 'Nodes')->merge($q->having(array(
+        'id' => 'item_id',
+        'lft' => 'left',
+        'rgt' => 'right'
+      )))
+      
+      ->save();
+      
+    });
+    
+    return $this->get_nodes(Data(), $params);
+    
+  }
+
 }

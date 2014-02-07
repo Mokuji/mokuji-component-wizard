@@ -15,10 +15,27 @@ class DBUpdates extends \components\update\classes\BaseDBUpdates
       '1.2' => '1.3',
       '1.3' => '1.4',
       
-      '1.4' => '0.2.0-beta'
+      '1.4' => '0.2.0-beta',
+      '0.2.0-beta' => '0.2.1-beta'
       
     );
   
+  public function update_to_0_2_1_beta($current_version, $forced){
+
+    mk('Sql')->query('
+      ALTER TABLE `#__wizard__nodes`
+        ADD COLUMN `page_id` INT(10) UNSIGNED NOT NULL AFTER `id`;
+        ADD COLUMN `lft` INT(10) UNSIGNED NOT NULL AFTER `page_id`,
+        ADD COLUMN `rgt` INT(10) UNSIGNED NOT NULL AFTER `lft`,
+        DROP COLUMN `parent_node_id`
+    ');
+
+    mk('Sql')->query('
+      DROP TABLE `#__wizard__node_pages`
+    ');
+
+  },
+
   public function update_to_0_2_0_beta($current_version, $forced)
   {
     

@@ -4,6 +4,7 @@ $uid = tx('Security')->random_string(20);
 
 echo load_plugin('jquery_rest');
 echo load_plugin('jquery_tmpl');
+echo load_plugin('to_hierarchy');
 
 $data->wizard->is('empty')
   
@@ -19,7 +20,7 @@ $data->wizard->is('empty')
     <?php tx('ob')->script('wizard_module', "templates"); ?>
       
       <script id="tx-wizard-question-tmpl" type="text/x-jquery-tmpl">
-        <div class="breadcrumbs"></div>
+        <ul class="breadcrumbs"></ul>
         <div class="question" data-id="${id}">
           <input type="button" class="back_button" value="<?php __($names->component, 'Go back', 'ucfirst'); ?>" />
           <h4>${title}</h4>
@@ -36,7 +37,9 @@ $data->wizard->is('empty')
       </script>
       
       <script id="tx-wizard-breadcrumb-tmpl" type="text/x-jquery-tmpl">
-        <a href="#" class="breadcrumb" {{if id}}data-id="${id}" {{/if}}data-target-question-id="${target_question_id}">{{html breadcrumb}}</a>
+        <li>
+          <a href="#" class="breadcrumb" {{if id}}data-id="${id}" {{/if}}data-target-question-id="${target_question_id}">{{html breadcrumb}}</a>
+        </li>
       </script>
       
       <script id="tx-wizard-notfound-tmpl" type="text/x-jquery-tmpl">
