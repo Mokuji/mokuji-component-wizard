@@ -564,3 +564,170 @@
   };
   
 })(jQuery);
+
+
+/**
+ * txWizard
+ *
+ * @author Beanow
+ */
+
+(function($){
+
+  $.fn.txNodes = function(options){
+    
+    var wizard = {}
+      , answers = {}
+      , view = $(this)
+      , answer_history = []
+      , current_node = {}
+    
+    if(!options)
+     options = {};
+    
+    if(!options.page_id){
+      alert('Fatal error: no wizard ID given for wizard.');
+      return;
+    }
+    
+    function init(){
+      
+      bind_events();
+      
+      $.rest('GET', '?rest=wizard/nodes/'+options.page_id)
+        .done(function(result){
+          wizard = result;
+          current_node = 0;
+          load_node();
+        });
+      
+    }
+    
+    function load_node(node_id)
+    {
+      
+      // var getq = $.rest('GET', '?rest=wizard/question/'+question_id)
+      //   .done(function(result){
+      //     question = result;
+      //   })
+      //   .error(function(){
+      //     view.html($('#tx-wizard-notfound-tmpl').tmpl({id:options.wizard_id}));
+      //   });
+      
+      // var geta = $.rest('GET', '?rest=wizard/answers/'+question_id)
+      //   .done(function(result){
+      //     answers = {};
+      //     $.each(result, function(i){
+      //       answers[result[i].id] = result[i];
+      //     });
+      //   });
+      
+      // $.when(getq, geta)
+      //   .done(function(){
+      //     render_question();
+      //   });
+      
+      if(node_id > 0){
+        $.each(wizard, function(i){
+          if(wizard[i].id == node_id){
+            current_node = i;
+          }
+        });
+      }
+
+      render_question();
+
+    }
+    
+    function render_question(){
+      console.log('question'+current_node);
+      view.html($('#tx-wizard-question-tmpl').tmpl(wizard[current_node]));
+      render_answers();
+      render_breadcrumbs();
+    };
+    
+    function render_answers()
+    {
+      
+      var av = view.find('.answers').html('');
+
+      //Get node answers.
+      var lft = wizard[current_node].lft;
+      var rgt = wizard[current_node].rgt;
+
+      //List answers in answers array.
+      var nr = 0;
+      answers = [];
+      $.each(wizard, function(i){
+        var node = wizard[i];
+        if(parseInt(node.lft) > parseInt(wizard[current_node].lft)
+            && parseInt(node.rgt) < parseInt(wizard[current_node].rgt)
+            && parseInt(node.depth) == parseInt(wizard[current_node].depth) + 1
+        ){
+          answers[nr] = node;
+          nr++;
+        }
+      });
+
+      $.each(answers, function(i){
+        av.append($('#tx-wizard-answer-tmpl').tmpl(answers[i]));
+      });
+      
+      if(answer_history.length <= 1){
+        $('.back_button').attr('disabled', 'disabled')
+      }else{
+        $('.back_button').removeAttr('disabled')
+      }
+    
+    }
+    
+    function render_breadcrumbs()
+    {
+      
+      var bc = view.find('.breadcrumbs').html('');
+      $.each(answer_history, function(i){
+        bc.append($('#tx-wizard-breadcrumb-tmpl').tmpl(answer_history[i]));
+      });
+      
+    }
+    
+    function bind_events()
+    {
+      
+      view
+        
+        /* ---------- Answer click ---------- */
+        .on('click', '.answer', function(e){
+          if($(e.target).closest('.answer').attr('href') == undefined)
+          {
+            e.preventDefault();
+            // answer_history.push(answers[$(this).attr('data-id')]);
+            load_node($(e.target).closest('.answer').data('id'));
+          }
+        })
+        
+        /* ---------- Back button ---------- */
+        .on('click', '.back_button:not(:disabled)', function(e){
+          e.preventDefault();
+          answer_history.pop();
+          load_question(answer_history[answer_history.length-1].target_question_id);
+        })
+        
+        /* ---------- Breadcrumb click ---------- */
+        .on('click', '.breadcrumbs a.breadcrumb', function(e){
+          e.preventDefault();
+          var target_index = $(e.target).closest('li').index();
+          while(answer_history.length > target_index + 1)
+            answer_history.pop();
+          load_question(answer_history[answer_history.length-1].target_question_id);
+        })
+        
+      ;
+      
+    }
+    
+    init();
+    
+  };
+  
+})(jQuery);

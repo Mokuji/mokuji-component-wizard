@@ -302,12 +302,15 @@ class Json extends \dependencies\BaseViews
     $options = $options->having('page_id')
       ->page_id->validate('Page ID', array('number'=>'integer', 'gt'=>0))->back()
     ;
+
+    $options->page_id->set($options->page_id->otherwise(mk('Url')->url->data->pid));
     
     return tx('Sql')
       ->table('wizard', 'Nodes')
       ->is($options->page_id->is_set(), function($q)use($options){
-        $q->where('page_id', $options->page_id);
+        $q->sk($options->page_id);
       })
+      ->add_absolute_depth('depth')
       ->order('lft')
       ->execute();
     
@@ -391,18 +394,52 @@ class Json extends \dependencies\BaseViews
     
   }
   
-  protected function update_nodes_hierarchy($data, $params)
+  protected function delete_node($data, $params)
   {
     
+    $qid = $params->{0}
+      ->validate('Node ID', array('required', 'number'=>'integer', 'gt'=>0));
+    
+    tx('Sql')
+      ->table('wizard', 'Nodes')
+      ->pk($qid)
+      ->execute_single()
+      ->is('empty', function(){
+        throw new \exception\NotFound();
+      })
+      ->hdelete();
+    
+    return true;
+    
+  }
+
+  protected function update_nodes_hierarchy($data, $params)
+  {
+
     $data->nodes->each(function($q){
-      
-      tx('Sql')->model('wizard', 'Nodes')->merge($q->having(array(
-        'id' => 'item_id',
-        'lft' => 'left',
-        'rgt' => 'right'
-      )))
-      
-      ->save();
+
+      tx('Sql')->table('wizard', 'Nodes')->pk($q->item_id)->execute_single()
+          ->not('empty', function($row)use($q){
+
+            $row->merge($q->having(array(
+              'id' => 'item_id',
+              'lft' => 'left',
+              'rgt' => 'right'
+            )))
+            
+            ->save();
+
+          })->failure(function()use($q){
+
+            tx('Sql')->model('wizard', 'Nodes')->merge($q->having(array(
+              'id' => 'item_id',
+              'lft' => 'left',
+              'rgt' => 'right'
+            )))
+            
+            ->save();
+
+          });
       
     });
     

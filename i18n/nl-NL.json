@@ -6,8 +6,9 @@
   "WIZARDS_VIEW_TITLE": "Wizard beheer",
   "WIZARDS_VIEW_DESCRIPTION": "",
   
-  
-  
+  "NODES_VIEW_TITLE": "Keuzewijzer",
+  "NODES_VIEW_DESCRIPTION": "",
+
   "A URL": "Een URL",
   "Add answer": "Voeg antwoord toe",
   "Add question": "Voeg vraag toe",
@@ -38,6 +39,26 @@
   "Untitled": "Ongetiteld",
   "URL target": "URL doel",
   
-  "Wizard could not be found": "Wizard kon niet gevonden worden"
+  "Wizard could not be found": "Wizard kon niet gevonden worden",
   
+  "Answer": "Antwoord",
+  "Follow up": "Vervolgactie",
+  "When this answer is clicked": "Als dit antwoord is aangeklikt",
+  "Option {0}": "Optie {0}",
+  "Example answer": "Voorbeeldantwoord",
+  "Example question": "Voorbeeldvraag",
+  "Show another question": "Toon een andere vraag",
+  "Question": "Vraag",
+  "Go to an URL": "Ga naar een URL",
+  "Open in": "Open in",
+  "Same window": "Zelfde venster",
+  "New window": "Nieuw venster",
+  "Save this entry": "Opslaan",
+  "Delete": "Verwijder",
+  "Add entry": "Nieuwe vraag"
+
 }
+
+
+
+

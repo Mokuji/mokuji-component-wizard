@@ -5,7 +5,7 @@ class Modules extends \dependencies\BaseViews
 
   protected
     $permissions = array(
-      'wizard' => 0
+      'nodes' => 0
     );
 
   protected function wizard($options)
@@ -15,6 +15,18 @@ class Modules extends \dependencies\BaseViews
       'wizard' => tx('Sql')
         ->table('wizard', 'Wizards')
         ->pk($options->wizard_id)
+        ->execute_single()
+    );
+    
+  }
+
+  protected function nodes($options)
+  {
+    
+    return array(
+      'wizard' => tx('Sql')
+        ->table('wizard', 'Nodes')
+        ->where('page_id', mk('Url')->url->data->pid)
         ->execute_single()
     );
     

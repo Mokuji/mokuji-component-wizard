@@ -14,10 +14,13 @@
       'nodeList': '.wizard-node-tree',
       'nodeEditView': '.wizard-node-editor',
       'nodeEditForm': '.wizard-edit-node',
+      'deleteNodeBtn': '.delete-node',
       'optionsRadio': '.option input[type="radio"]',
       'node': '.wizard-node-tree a',
       'addNodeBtn': '.add-node',
-      'addNodeBelowBtn': '.add-node-below'
+      'addNodeBelowBtn': '.add-node-below',
+      'btn_collapse': '.icon-collapse',
+      'btn_expand': '.icon-expand'
     },
     
     events:{
@@ -26,20 +29,36 @@
         
         //Disable all options.
         this.nodeEditForm
-          .find('.option-based :input:not([name="option"])')
-          .attr('disabled', 'disabled');
+          .find('.option-based')
+            .find(':input:not([name="option"])')
+              .attr('disabled', 'disabled')
+              .end()
+            .removeClass('active');
         
         //Enable currently selected option.
         this.nodeEditForm
           .find('[name="option"]:checked')
-          .closest('.option-based').find(':disabled')
-          .removeAttr('disabled');
+            .closest('.option-based')
+            .find(':disabled')
+              .removeAttr('disabled')
+              .end()
+            .find('input[type="text"]')
+              .focus()
+              .end()
+            .addClass('active');
         
       },
 
       'click on addNodeBtn': function(e){
         e.preventDefault();
         this.editEntry();
+      },
+
+      'click on deleteNodeBtn': function(e){
+        e.preventDefault();
+        if(confirm('Weet je zeker dat je deze vraag wilt verwijderen?')){
+          this.deleteEntry($(e.target).data('id'));
+        }
       },
 
       'click on addNodeBelowBtn': function(e){
@@ -58,7 +77,15 @@
 
       'click on node': function(e){
         e.preventDefault();
-        this.editEntry($(e.target).data('id'));
+        this.editEntry($(e.target).closest('a').data('id'));
+      },
+
+      'click on btn_collapse': function(e){
+        this.collapse($(e.target).closest('li'));
+      },
+      
+      'click on btn_expand': function(e){
+        this.expand($(e.target).closest('li'));
       }
 
       // //Let findability know we have a recommended default.
@@ -182,6 +209,64 @@
             
     },
 
+    //Collapse a menu item and its sub-items.
+    collapse: function(item){
+      
+      $(item).find('.icon-toggle:eq(0)').removeClass('icon-collapse').addClass('icon-expand');
+      $(item).addClass('collapsed');
+      
+      return this;
+      
+    },
+    
+    //Un-collapse.
+    expand: function(item){
+      
+      $(item).find('.icon-toggle:eq(0)').removeClass('icon-expand').addClass('icon-collapse');
+      $(item).removeClass('collapsed');
+      
+      return this;
+      
+    },
+    
+    //Collapse a menu item and its sub-items.
+    collapseItems: function(level){
+      
+      var self = this;
+      
+      //Collapse all levels.
+      $(self.el).find('li').each(function(){
+        self.collapse($(this));
+      });
+
+      //Expand levels above level of active menu item.
+      $(self.el).find('.menu-item.active').parents('li').each(function(){
+        self.expand($(this));
+      });
+
+    },
+    
+    //Add the has-sub class to items that have sub-menu items.
+    checkHasSub: function(){
+      
+      var self = this;
+      
+      $.after(0).done(function(){
+        console.log(self.nodeList.find(':has(ul)'));
+
+        // self.nodeList.find(':has(ul)').addClass('has-sub');
+        // self.nodeList.find(':not(:has(>ul:has(li)))').find('>ul').remove();
+        // self.nodeList.find(':not(:has(>ul))').removeClass('has-sub');
+
+        self.nodeList.find('li').removeClass('has-sub');
+        self.nodeList.find('li:has(>ul>li)').addClass('has-sub');
+
+      });
+      
+      return self;
+      
+    },
+
     loadTree: function(data){
 
       var self = this;
@@ -229,6 +314,7 @@
       };
 
       renderer(self.nodeList, self.nodeHierarchy, 0);
+      self.checkHasSub();
       
     },
     
@@ -247,6 +333,18 @@
           page_id: self.pageId,
         }).appendTo(self.nodeEditView);
 
+        form.find('input[name="answer_title"]').focus();
+        
+        //Enable selected option.
+        if(data.question_title && data.question_title.length > 0){
+          form.find('.option-based.question').addClass('active');
+          $('input[name="option"][value="question"]').attr('checked', 'checked');
+        }
+        else if(data.url && data.url.length > 0){
+          form.find('.option-based.url').addClass('active');
+          $('input[name="option"][value="url"]').attr('checked', 'checked');
+        }
+
         form.restForm({
           beforeSubmit: function(){
             if(hasFeedback) app.Feedback.working('Saving entry...').startBuffer();
@@ -262,6 +360,24 @@
 
         //Refresh elements.
         self.refreshElements();
+
+      });
+      
+    },
+
+    //Edit entry.
+    deleteEntry: function(id){
+      
+      var self = this;
+      var hasFeedback = true;//#TODO
+
+      $.rest('DELETE', '?rest=wizard/node/'+(id ? id : null)).done(function(data){
+        
+        //Refresh elements.
+        self.refreshElements();
+
+        //Reload tree.
+        self.loadTree();
 
       });
       

@@ -103,6 +103,9 @@ h1, h2, h3, h4, h5, h6{
     .wizard-node-tree li{
       position:relative;
     }
+    .wizard-node-tree li > div{
+      margin-left:15px;
+    }
     .wizard-node-tree li li{
       margin-left:25px;
     }
@@ -142,6 +145,7 @@ h1, h2, h3, h4, h5, h6{
         top:0;
         padding:0;
         margin:0;
+        background-color:#545454;
       }
         .wizard-node-tree .add-node-below:hover{
           background-color:#282727;
@@ -163,6 +167,7 @@ h1, h2, h3, h4, h5, h6{
   position:relative;
   margin-left:70px;
   margin-bottom:40px;
+  padding-left:15px;
 }
 .wizard-edit-node fieldset legend{
   position:absolute;
@@ -416,3 +421,82 @@ h1, h2, h3, h4, h5, h6{
       border:1px solid #515151;
     }
 
+#save-page{
+  display:none;
+}
+.label{
+  display: inline-block;
+  padding: .2em .6em .3em !important;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+.label-info{
+  background-color: #5bc0de;
+}
+.label-default{
+  background-color: #999;
+}
+
+.wizard-node-view {
+  height:auto;
+}
+.wizard-node-tree a{
+  line-height:22px;
+}
+.wizard-node-tree small{
+  display:block;
+  font-size:0.8em;
+  margin-top:-9px;
+}
+.option-based{
+  padding: 15px;
+}
+.option-based.active{
+  border-radius: 5px;
+  background: #eee;
+}
+.option-based .label{
+  margin-top:17px;
+}
+
+/**/
+
+.wizard-node-tree li.collapsed ul{
+  display: none;
+}
+
+.wizard-node-tree .icon-toggle{
+  display: none;
+  position: absolute;
+  left:-7px;
+  height:33px !important;
+  opacity:0.75;
+}
+.wizard-node-tree .icon-toggle:hover{
+  opacity:1;
+}
+
+.wizard-node-tree:hover li.has-sub > div > .icon-toggle{
+  display:block !important;
+  cursor:pointer !important;
+  background-position:5px 10px !important;
+}
+.wizard-node-tree:hover li.has-sub > ul > .has-sub .icon-toggle{
+  left:0px !important;
+  height:24px !important;
+  background-position:0px 5px !important;
+}
+
+.wizard-node-tree:hover .icon-collapse{
+  background-image:url('../../../themes/cms_backend/img/icons/left-menu-arrow-square.png');
+}
+
+.wizard-node-tree:hover .icon-expand{
+  background-image:url('../../../themes/cms_backend/img/icons/left-menu-arrow-collapse-square.png');
+}

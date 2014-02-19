@@ -6,7 +6,8 @@ class Views extends \dependencies\BaseViews
   protected
     $permissions = array(
       'wizard' => 0,
-      'wizards' => 0
+      'wizards' => 0,
+      'nodes' => 0
     );
 
   protected function wizard($options)
@@ -119,6 +120,15 @@ class Views extends \dependencies\BaseViews
     
     return array();
     
+  }
+  
+  protected function nodes($options)
+  {
+      
+    return array(
+      $this->module('nodes', array('page_id'=>mk('Url')->url->data->pid))
+    );
+        
   }
   
 }
