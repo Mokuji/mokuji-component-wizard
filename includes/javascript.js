@@ -629,10 +629,12 @@
       
       if(node_id > 0){
         $.each(wizard, function(i){
-          if(wizard[i].id == node_id){
+          if(parseInt(wizard[i].id) == parseInt(node_id)){
             current_node = i;
           }
         });
+      }else{
+        current_node = 0;
       }
 
       render_question();
@@ -640,7 +642,6 @@
     }
     
     function render_question(){
-      console.log('question'+current_node);
       view.html($('#tx-wizard-question-tmpl').tmpl(wizard[current_node]));
       render_answers();
       render_breadcrumbs();
@@ -665,6 +666,7 @@
             && parseInt(node.depth) == parseInt(wizard[current_node].depth) + 1
         ){
           answers[nr] = node;
+          answers[nr]['nr'] = wizard[i]['nr'] = i;
           nr++;
         }
       });
@@ -672,8 +674,8 @@
       $.each(answers, function(i){
         av.append($('#tx-wizard-answer-tmpl').tmpl(answers[i]));
       });
-      
-      if(answer_history.length <= 1){
+
+      if(answer_history.length < 1){
         $('.back_button').attr('disabled', 'disabled')
       }else{
         $('.back_button').removeAttr('disabled')
@@ -685,6 +687,10 @@
     {
       
       var bc = view.find('.breadcrumbs').html('');
+      bc.append($('#tx-wizard-breadcrumb-tmpl').tmpl({
+        'id': 0,
+        'question_title': 'Start'
+      }));
       $.each(answer_history, function(i){
         bc.append($('#tx-wizard-breadcrumb-tmpl').tmpl(answer_history[i]));
       });
@@ -701,8 +707,9 @@
           if($(e.target).closest('.answer').attr('href') == undefined)
           {
             e.preventDefault();
-            // answer_history.push(answers[$(this).attr('data-id')]);
-            load_node($(e.target).closest('.answer').data('id'));
+            var clicked_node = $(e.target).closest('.answer');
+            answer_history.push(wizard[clicked_node.data('nr')]);
+            load_node(clicked_node.data('id'));
           }
         })
         
@@ -710,16 +717,21 @@
         .on('click', '.back_button:not(:disabled)', function(e){
           e.preventDefault();
           answer_history.pop();
-          load_question(answer_history[answer_history.length-1].target_question_id);
+          if(answer_history.length > 0){
+            load_node(parseInt(answer_history[answer_history.length].id));
+          }
+          else{
+            load_node();
+          }
         })
         
         /* ---------- Breadcrumb click ---------- */
         .on('click', '.breadcrumbs a.breadcrumb', function(e){
           e.preventDefault();
           var target_index = $(e.target).closest('li').index();
-          while(answer_history.length > target_index + 1)
+          while(answer_history.length > target_index)
             answer_history.pop();
-          load_question(answer_history[answer_history.length-1].target_question_id);
+          load_node($(e.target).closest('a').data('id'));
         })
         
       ;

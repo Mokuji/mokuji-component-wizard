@@ -124,6 +124,7 @@ h1, h2, h3, h4, h5, h6{
         text-decoration:none;
         border-radius:3px;
       }
+        .wizard-node-tree li.active > div > a,
         .wizard-node-tree a:hover,
         .wizard-node-tree a.active{
           background-color:#282727;
@@ -444,7 +445,7 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .wizard-node-view {
-  height:auto;
+  overflow:auto;
 }
 .wizard-node-tree a{
   line-height:22px;

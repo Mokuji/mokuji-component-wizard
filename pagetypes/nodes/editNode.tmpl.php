@@ -31,8 +31,9 @@
     <label class="option"><input type="radio" name="option" value="url" /> <?php __($component, 'Go to an URL'); ?>.</label>
     <div class="ctrlHolder">
       <label><?php __($component, 'URL'); ?>:</label>
-      <input class="big" type="text" name="url" value="${data.url}" placeholder="http://www.mokuji.net/" />
+      <input class="big" type="text" name="url" value="${data.url}" placeholder="http://www.example.com/" />
     </div>
+    <img class="url-preview" height="150">
     <div class="ctrlHolder">
       <label><?php __($component, 'Open in'); ?>:</label>
       <select name="url_target">

@@ -67,6 +67,10 @@
 
         e.preventDefault();
 
+        //Expand tree at this point.
+        $(e.target).closest('.question').removeClass('collapsed')
+            .find('li').addClass('collapsed');
+
         $.rest('POST', app.options.url_base+'/rest/wizard/node_below/'+$(e.target).data('id'), {
           page_id: self.pageId
         }).done(function(){
@@ -77,6 +81,10 @@
 
       'click on node': function(e){
         e.preventDefault();
+
+        //Give 'active' class
+        this.nodeList.find('li').removeClass('active');
+        $(e.target).closest('li').addClass('active');
         this.editEntry($(e.target).closest('a').data('id'));
       },
 
@@ -130,12 +138,14 @@
     //When rendering of the tab templates has been done, do some final things.
     afterRender: function(){
       
+      var self = this;
+
       //Turn the form on the content tab into a REST form.
       this.nodeEditForm.restForm({success: this.proxy(this.afterSave)});
       this.optionsRadio.trigger('change');
       this.initTree();
       this.loadTree();
-      
+
     },
     
     //Saves the data currently present in the different tabs controlled by this controller.
@@ -252,15 +262,8 @@
       var self = this;
       
       $.after(0).done(function(){
-        console.log(self.nodeList.find(':has(ul)'));
-
-        // self.nodeList.find(':has(ul)').addClass('has-sub');
-        // self.nodeList.find(':not(:has(>ul:has(li)))').find('>ul').remove();
-        // self.nodeList.find(':not(:has(>ul))').removeClass('has-sub');
-
         self.nodeList.find('li').removeClass('has-sub');
         self.nodeList.find('li:has(>ul>li)').addClass('has-sub');
-
       });
       
       return self;
@@ -297,6 +300,13 @@
 
       var self = this;
 
+      //Save 'collapsed' state.
+      var collapsed_ids = [], i = 0;
+      self.nodeList.find('li.collapsed').each(function(){
+        collapsed_ids[i] = $(this).attr('rel');
+        i++;
+      });
+
       self.nodeList.find('li').remove();
       
       var renderer = function(list_target, data, depth){
@@ -314,6 +324,12 @@
       };
 
       renderer(self.nodeList, self.nodeHierarchy, 0);
+      
+      //Bring back collapsed state.
+      $.each(collapsed_ids, function(i){
+        self.nodeList.find('li[rel='+collapsed_ids[i]+']').addClass('collapsed');
+      });
+
       self.checkHasSub();
       
     },
@@ -336,6 +352,7 @@
         form.find('input[name="answer_title"]').focus();
         
         //Enable selected option.
+        $('.url-preview').hide();
         if(data.question_title && data.question_title.length > 0){
           form.find('.option-based.question').addClass('active');
           $('input[name="option"][value="question"]').attr('checked', 'checked');
@@ -343,6 +360,7 @@
         else if(data.url && data.url.length > 0){
           form.find('.option-based.url').addClass('active');
           $('input[name="option"][value="url"]').attr('checked', 'checked');
+          // $('.url-preview').attr('src','http://s.wordpress.com/mshots/v1/'+encodeURIComponent($('input[type="text"][name="url"]').attr('value'))+'%2F?w=150').show();
         }
 
         form.restForm({

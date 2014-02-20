@@ -23,20 +23,20 @@ $data->wizard->is('empty')
         <ul class="breadcrumbs"></ul>
         <div class="question" data-id="${id}">
           <input type="button" class="back_button" value="<?php __($names->component, 'Go back', 'ucfirst'); ?>" />
-          <h4>${question_title}</h4>
+          <h4>${question_title}&nbsp;</h4>
         </div>
         <div class="answers"></div>
       </script>
       
       <script id="tx-wizard-answer-tmpl" type="text/x-jquery-tmpl">
-        <a class="answer" data-id="${id}" {{if url}}href="${url}" target="${url_target}"{{/if}}>
+        <a class="answer" data-id="${id}" data-nr="${nr}" {{if url}}href="${url}" target="${url_target}"{{/if}}>
           <h5>${answer_title}</h5>
         </a>
       </script>
       
       <script id="tx-wizard-breadcrumb-tmpl" type="text/x-jquery-tmpl">
         <li>
-          <a href="#" class="breadcrumb" {{if id}}data-id="${id}" {{/if}}data-target-question-id="${target_question_id}">{{html breadcrumb}}</a>
+          <a href="#" class="breadcrumb" {{if id}}data-id="${id}" {{/if}}>{{html question_title}}</a>
         </li>
       </script>
       
